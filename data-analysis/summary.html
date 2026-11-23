@@ -1,0 +1,1175 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>データ分析入門・まとめシート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#ffffff;
+    --bg-soft:#eef3f1;
+    --surface:#ffffff;
+    --surface-2:#f4f7f5;
+    --ink:#17211d;
+    --ink-2:#43514b;
+    --ink-3:#6b7a73;
+    --line:#d8e0dc;
+    --line-strong:#b9c8c1;
+    --teal:#0c5a4d;
+    --teal-deep:#083f36;
+    --teal-bright:#12836e;
+    --teal-tint:#e2efeb;
+    --ochre:#b96f12;
+    --ochre-tint:#fbf0dd;
+    --ochre-ink:#7a4a08;
+    --red:#b03a2e;
+    --red-tint:#fbeae8;
+    --code-bg:#0e2420;
+    --code-ink:#d9efe8;
+    --hero-bg:#083f36;
+    --hero-ink:#f2f7f4;
+    --hero-sub:#bcd8cf;
+    --shadow:0 1px 2px rgba(8,40,33,.06),0 8px 28px rgba(8,40,33,.07);
+    --radius:14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#101613;
+      --bg-soft:#161e1a;
+      --surface:#18201c;
+      --surface-2:#1d2621;
+      --ink:#eef3f0;
+      --ink-2:#c3cfc9;
+      --ink-3:#93a49b;
+      --line:#2c3832;
+      --line-strong:#3d4d45;
+      --teal:#4fc3a9;
+      --teal-deep:#0a2e28;
+      --teal-bright:#5ec8b4;
+      --teal-tint:#17332d;
+      --ochre:#e5a54b;
+      --ochre-tint:#33270f;
+      --ochre-ink:#f0c078;
+      --red:#e88a7d;
+      --red-tint:#3a201c;
+      --code-bg:#0a1a16;
+      --code-ink:#cfe9e0;
+      --hero-bg:#0a2e28;
+      --hero-ink:#eef6f2;
+      --hero-sub:#a9cabe;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.28);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *{transition:none!important;animation:none!important}
+  }
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic UI","Yu Gothic",sans-serif;
+    font-size:16px;line-height:1.85;-webkit-font-smoothing:antialiased;
+  }
+  button,[role="button"],select,summary,input:not([type="checkbox"],[type="radio"]){min-height:2.25rem}
+  a{color:var(--teal)}
+  .wrap{max-width:980px;margin:0 auto;padding:0 20px}
+
+  /* ---------- Hero ---------- */
+  .hero{background:var(--hero-bg);color:var(--hero-ink);padding:52px 0 44px;position:relative;overflow:hidden}
+  .hero::after{
+    content:"";position:absolute;right:-70px;top:-70px;width:300px;height:300px;border-radius:50%;
+    border:52px solid rgba(255,255,255,.05);pointer-events:none;
+  }
+  .hero::before{
+    content:"";position:absolute;right:110px;bottom:-120px;width:190px;height:190px;border-radius:50%;
+    border:34px solid rgba(255,255,255,.04);pointer-events:none;
+  }
+  .hero .kicker{
+    font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.22em;
+    color:var(--hero-sub);margin:0 0 14px;font-weight:600;
+  }
+  .hero h1{
+    font-family:"Shippori Mincho B1","Hiragino Mincho ProN",serif;
+    font-size:clamp(1.9rem,5.4vw,3rem);line-height:1.3;font-weight:800;margin:0 0 16px;letter-spacing:.01em;
+  }
+  .hero .lead{font-size:clamp(1rem,2.4vw,1.13rem);color:var(--hero-sub);margin:0;max-width:640px;line-height:1.9}
+  .hero .lead strong{color:var(--hero-ink)}
+  .hero-stats{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px;position:relative;z-index:1}
+  .hstat{
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);
+    border-radius:10px;padding:10px 16px 12px;min-width:132px;
+  }
+  .hstat .num{font-family:"Shippori Mincho B1",serif;font-size:1.45rem;font-weight:800;line-height:1.25;display:block}
+  .hstat .num small{font-size:.85rem;font-weight:600}
+  .hstat .lbl{font-size:.76rem;color:var(--hero-sub);letter-spacing:.04em;display:block}
+
+  /* ---------- Nav ---------- */
+  .toc{
+    position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);
+  }
+  .toc .wrap{display:flex;gap:4px;overflow-x:auto;padding-top:8px;padding-bottom:8px;scrollbar-width:none}
+  .toc .wrap::-webkit-scrollbar{display:none}
+  .toc a{
+    flex:0 0 auto;text-decoration:none;color:var(--ink-2);font-size:.86rem;font-weight:700;
+    padding:9px 13px;border-radius:999px;min-height:2.5rem;display:inline-flex;align-items:center;
+  }
+  .toc a:hover{background:var(--bg-soft);color:var(--ink)}
+  .toc a .n{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--teal);margin-right:6px;font-weight:600}
+  .toc a.ext{color:var(--teal);border:1.5px solid var(--teal);margin-left:6px}
+  .toc a.ext:hover{background:var(--teal-tint);color:var(--teal)}
+  .toc a.ext .arr{margin-left:5px;font-size:.78rem;font-weight:900}
+
+  /* ---------- Sections ---------- */
+  main{padding:8px 0 30px}
+  section{padding:38px 0 6px;scroll-margin-top:76px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}
+  .sec-head .no{
+    font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:.95rem;color:var(--teal);
+    border:1.5px solid var(--teal);border-radius:8px;padding:2px 9px;line-height:1.5;flex:0 0 auto;
+  }
+  .sec-head h2{
+    font-family:"Shippori Mincho B1","Hiragino Mincho ProN",serif;
+    font-size:clamp(1.35rem,3.6vw,1.7rem);font-weight:800;margin:0;line-height:1.4;
+  }
+  .sec-lead{color:var(--ink-2);margin:6px 0 22px;max-width:720px}
+  h3.sub{
+    font-size:1.02rem;font-weight:900;margin:30px 0 12px;display:flex;align-items:center;gap:10px;
+  }
+  h3.sub::after{content:"";flex:1;height:1px;background:var(--line)}
+  p{margin:0 0 14px}
+  ul.tight{margin:0 0 14px;padding-left:1.25em}
+  ul.tight li{margin-bottom:7px}
+  ul.tight li::marker{color:var(--teal)}
+  strong{font-weight:900}
+
+  /* ---------- Definition flow ---------- */
+  .flow3{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:stretch;margin:20px 0 8px}
+  .flow3 .cell{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:16px 16px 12px}
+  .flow3 .cell.insight{background:var(--teal-tint);border-color:var(--line-strong)}
+  .flow3 .tag{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.14em;font-weight:600;color:var(--teal);display:block;margin-bottom:4px}
+  .flow3 .cell h4{margin:0 0 6px;font-size:1.05rem;font-weight:900}
+  .flow3 .cell p{font-size:.88rem;color:var(--ink-2);margin:0;line-height:1.7}
+  .flow3 .arrow{display:flex;align-items:center;justify-content:center;color:var(--teal);font-weight:900;font-size:1.15rem}
+  @media (max-width:680px){
+    .flow3{grid-template-columns:1fr}
+    .flow3 .arrow{transform:rotate(90deg);padding:2px 0}
+  }
+  .metaphors{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+  .metaphor{border-top:3px solid var(--teal);padding:12px 4px 0}
+  .metaphor .word{font-family:"Shippori Mincho B1",serif;font-size:1.12rem;font-weight:800;display:block;margin-bottom:4px}
+  .metaphor p{font-size:.88rem;color:var(--ink-2);margin:0;line-height:1.75}
+  @media (max-width:680px){.metaphors{grid-template-columns:1fr}}
+
+  /* ---------- Process steps ---------- */
+  .cycle-note{
+    display:flex;gap:12px;align-items:flex-start;background:var(--ochre-tint);border-radius:var(--radius);
+    padding:15px 18px;margin:0 0 20px;font-size:.93rem;line-height:1.8;
+  }
+  .cycle-note .ic{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--ochre-ink);flex:0 0 auto;font-size:1.05rem;line-height:1.6}
+  .cycle-note p{margin:0;color:var(--ink)}
+  .steps{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  @media (max-width:680px){.steps{grid-template-columns:1fr}}
+  .step{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 18px 14px;box-shadow:var(--shadow);position:relative;
+  }
+  .step .top{display:flex;align-items:center;gap:11px;margin-bottom:8px}
+  .step .num{
+    width:38px;height:38px;border-radius:50%;background:var(--teal);color:#fff;flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;
+    font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:1rem;
+  }
+  @media (prefers-color-scheme: dark){.step .num{color:#0a201b}}
+  .step .en{font-family:"IBM Plex Mono",monospace;font-size:.74rem;letter-spacing:.16em;color:var(--teal);font-weight:600;display:block;line-height:1.3}
+  .step h4{margin:0;font-size:1.12rem;font-weight:900;line-height:1.4}
+  .step .do{font-size:.93rem;margin:0 0 8px;line-height:1.8}
+  .step .purpose{font-size:.86rem;color:var(--ink-2);margin:0;line-height:1.75;border-top:1px dashed var(--line-strong);padding-top:9px}
+  .step .purpose b{color:var(--teal);font-weight:900}
+  .badge{
+    position:absolute;top:14px;right:14px;font-size:.7rem;font-weight:900;letter-spacing:.05em;
+    padding:3px 9px;border-radius:999px;line-height:1.5;
+  }
+  .badge.important{background:var(--red-tint);color:var(--red)}
+  .badge.time{background:var(--ochre-tint);color:var(--ochre-ink)}
+  .loopback{
+    margin-top:16px;font-size:.9rem;color:var(--ink-2);background:var(--surface-2);
+    border:1px solid var(--line);border-radius:var(--radius);padding:13px 17px;line-height:1.8;
+  }
+  .loopback b{color:var(--ink)}
+
+  .vs{
+    display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px;
+  }
+  @media (max-width:680px){.vs{grid-template-columns:1fr}}
+  .vs .card{border-radius:var(--radius);padding:18px;border:1px solid var(--line)}
+  .vs .card.prep{background:var(--surface-2)}
+  .vs .card.proc{background:var(--teal-tint);border-color:var(--line-strong)}
+  .vs .card .vs-en{font-family:"IBM Plex Mono",monospace;font-size:.74rem;letter-spacing:.16em;font-weight:600;color:var(--teal)}
+  .vs .card h4{margin:2px 0 8px;font-size:1.25rem;font-weight:900}
+  .vs .card h4 .big{font-family:"Shippori Mincho B1",serif;font-size:1.5rem}
+  .vs .card p{font-size:.9rem;margin:0;color:var(--ink-2);line-height:1.8}
+  .vs-title{display:flex;align-items:center;gap:10px;margin:28px 0 0;font-weight:900;font-size:.98rem}
+  .vs-title .warn{color:var(--red);font-family:"IBM Plex Mono",monospace;font-size:.78rem;font-weight:600}
+
+  /* ---------- Quiz ---------- */
+  .quiz{
+    margin-top:22px;border:1.5px solid var(--teal);border-radius:var(--radius);padding:20px;background:var(--surface);
+  }
+  .quiz .q-label{font-family:"IBM Plex Mono",monospace;font-size:.74rem;letter-spacing:.16em;color:var(--teal);font-weight:600;margin:0 0 6px}
+  .quiz .q-text{font-weight:700;margin:0 0 14px;line-height:1.8}
+  .quiz .opts{display:grid;gap:9px}
+  .quiz button.opt{
+    text-align:left;font:inherit;font-size:.95rem;font-weight:700;color:var(--ink);
+    background:var(--surface-2);border:1.5px solid var(--line-strong);border-radius:10px;
+    padding:12px 16px;cursor:pointer;min-height:3rem;width:100%;
+  }
+  .quiz button.opt:hover{border-color:var(--teal)}
+  .quiz button.opt:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+  .quiz button.opt.correct{border-color:var(--teal-bright);background:var(--teal-tint)}
+  .quiz button.opt.wrong{border-color:var(--red);background:var(--red-tint)}
+  .quiz button.opt:disabled{cursor:default;opacity:.92}
+  .quiz .feedback{margin:14px 0 0;font-size:.92rem;line-height:1.8;display:none}
+  .quiz .feedback.show{display:block}
+  .quiz .feedback .verdict{font-weight:900}
+  .quiz .retry{
+    margin-top:12px;font:inherit;font-size:.86rem;font-weight:700;cursor:pointer;
+    background:none;border:1.5px solid var(--line-strong);color:var(--ink-2);
+    border-radius:999px;padding:8px 18px;display:none;min-height:2.5rem;
+  }
+  .quiz .retry.show{display:inline-block}
+  .quiz .retry:hover{border-color:var(--teal);color:var(--teal)}
+
+  /* ---------- Roadmap / tools ---------- */
+  .road{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0 4px}
+  @media (max-width:760px){.road{grid-template-columns:1fr}}
+  .road .stage{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+  .road .stage .lv{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.14em;color:var(--ochre);font-weight:600}
+  @media (prefers-color-scheme: dark){.road .stage .lv{color:var(--ochre)}}
+  .road .stage h4{margin:4px 0 10px;font-size:1.08rem;font-weight:900}
+  .road .stage ul{margin:0;padding-left:1.15em;font-size:.9rem;color:var(--ink-2);line-height:1.75}
+  .road .stage li{margin-bottom:5px}
+  .road .stage li::marker{color:var(--ochre)}
+  .toolgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+  @media (max-width:680px){.toolgrid{grid-template-columns:1fr}}
+  .tool{border:1px solid var(--line);border-radius:var(--radius);padding:18px;background:var(--surface-2)}
+  .tool h4{margin:0 0 4px;font-size:1.15rem;font-weight:900}
+  .tool h4 .role{font-size:.85rem;color:var(--teal);font-weight:900;margin-left:8px}
+  .tool p{font-size:.9rem;color:var(--ink-2);margin:0;line-height:1.8}
+  pre.code{
+    background:var(--code-bg);color:var(--code-ink);border-radius:12px;padding:16px 18px;
+    font-family:"IBM Plex Mono",monospace;font-size:.8rem;line-height:1.75;overflow-x:auto;margin:14px 0 6px;
+  }
+  pre.code .kw{color:#7fd8c0;font-weight:600}
+  .code-cap{font-size:.8rem;color:var(--ink-3);margin:0 0 6px}
+  .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:6px}
+  @media (max-width:680px){.stats-grid{grid-template-columns:1fr}}
+  .stat-item{display:flex;gap:12px;align-items:flex-start;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+  .stat-item .dot{width:9px;height:9px;border-radius:50%;background:var(--teal);flex:0 0 auto;margin-top:.62em}
+  .stat-item p{margin:0;font-size:.9rem;line-height:1.75;color:var(--ink-2)}
+  .stat-item p b{color:var(--ink)}
+
+  /* ---------- Use cases ---------- */
+  .impact{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:16px 0 4px}
+  @media (max-width:680px){.impact{grid-template-columns:1fr}}
+  .impact .item{border-left:4px solid var(--teal);background:var(--surface-2);border-radius:0 12px 12px 0;padding:14px 16px}
+  .impact .item h4{margin:0 0 4px;font-size:1rem;font-weight:900}
+  .impact .item p{margin:0;font-size:.89rem;color:var(--ink-2);line-height:1.75}
+  .example{
+    border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px 8px;margin-top:16px;background:var(--surface);box-shadow:var(--shadow);
+  }
+  .example .ex-title{font-weight:900;margin:0 0 10px;font-size:.98rem}
+  .example .ex-title span{color:var(--teal);font-family:"IBM Plex Mono",monospace;font-size:.74rem;letter-spacing:.12em;display:block;font-weight:600;margin-bottom:2px}
+  .example ol{margin:0 0 12px;padding-left:1.3em;font-size:.92rem;line-height:1.85;color:var(--ink-2)}
+  .example ol li{margin-bottom:5px}
+  .example ol li b{color:var(--ink)}
+  .daily-cycle{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0 16px}
+  .daily-cycle .chip{
+    background:var(--teal-tint);color:var(--ink);border-radius:999px;padding:8px 15px;
+    font-size:.88rem;font-weight:700;display:inline-flex;align-items:center;min-height:2.4rem;
+  }
+  .daily-cycle .arr{color:var(--teal);font-weight:900}
+
+  /* ---------- Analytics types & cases ---------- */
+  .ladder{display:grid;gap:12px;margin:18px 0 6px}
+  .type{
+    display:grid;grid-template-columns:auto 1fr;gap:2px 18px;align-items:start;
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:17px 19px;box-shadow:var(--shadow);
+  }
+  @media (min-width:681px){
+    .type:nth-child(2){margin-left:26px}
+    .type:nth-child(3){margin-left:52px}
+    .type:nth-child(4){margin-left:78px}
+  }
+  .type .lvl{
+    font-family:"Shippori Mincho B1",serif;font-size:1.85rem;font-weight:800;color:var(--teal);
+    line-height:1.15;grid-row:span 2;padding-top:2px;
+  }
+  .type h4{margin:0;font-size:1.12rem;font-weight:900;line-height:1.45}
+  .type h4 .en{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.14em;color:var(--teal);font-weight:600;margin-left:9px;white-space:nowrap}
+  .type .q{margin:0;font-size:.92rem;line-height:1.8;color:var(--ink-2)}
+  .type .q b{color:var(--ochre-ink);font-weight:900}
+  .cases{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0 4px}
+  @media (max-width:680px){.cases{grid-template-columns:1fr}}
+  .case{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+  .case .co{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.14em;color:var(--teal);font-weight:600;display:block}
+  .case h4{margin:3px 0 8px;font-size:1.1rem;font-weight:900;line-height:1.5}
+  .case p{font-size:.9rem;color:var(--ink-2);margin:0 0 10px;line-height:1.8}
+  .case p b{color:var(--ink)}
+  .case .result{border-top:1px dashed var(--line-strong);padding-top:10px;margin-bottom:12px}
+  .case .tags{display:flex;flex-wrap:wrap;gap:6px}
+  .case .tag{font-size:.72rem;font-weight:900;padding:3px 10px;border-radius:999px;background:var(--teal-tint);color:var(--teal);line-height:1.6}
+  .source-note{font-size:.8rem;color:var(--ink-3);margin:14px 0 0;line-height:1.8}
+
+  /* ---------- Process variations ---------- */
+  .origin-note{
+    display:flex;gap:12px;align-items:flex-start;background:var(--surface-2);border:1px solid var(--line);
+    border-radius:var(--radius);padding:15px 18px;margin:0 0 20px;font-size:.93rem;line-height:1.8;
+  }
+  .origin-note .ic{font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--teal);flex:0 0 auto;font-size:.78rem;letter-spacing:.1em;line-height:1.7;padding-top:2px}
+  .origin-note p{margin:0;color:var(--ink-2)}
+  .origin-note p b{color:var(--ink)}
+  .variants{display:grid;gap:14px;margin:18px 0 4px}
+  .variant{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 19px 15px;box-shadow:var(--shadow)}
+  .variant.base{border:1.5px solid var(--teal);background:var(--teal-tint)}
+  .variant .v-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 12px;margin-bottom:10px}
+  .variant .v-head h4{margin:0;font-size:1.12rem;font-weight:900;line-height:1.45}
+  .variant .v-org{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.12em;color:var(--teal);font-weight:600}
+  .variant .v-count{margin-left:auto;font-size:.72rem;font-weight:900;padding:3px 10px;border-radius:999px;background:var(--ochre-tint);color:var(--ochre-ink);line-height:1.6;white-space:nowrap}
+  .variant.base .v-count{background:var(--teal);color:#fff}
+  @media (prefers-color-scheme: dark){.variant.base .v-count{color:#0a201b}}
+  .v-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 11px}
+  .v-flow .vchip{background:var(--surface-2);border:1px solid var(--line-strong);border-radius:8px;padding:5px 10px;font-size:.83rem;font-weight:700;line-height:1.5}
+  .variant.base .v-flow .vchip{background:var(--surface)}
+  .v-flow .varr{color:var(--teal);font-weight:900;font-size:.8rem}
+  .variant p{font-size:.9rem;color:var(--ink-2);margin:0;line-height:1.8}
+  .variant p b{color:var(--ink)}
+  .variant .v-diff{border-top:1px dashed var(--line-strong);padding-top:9px;margin-top:10px;font-size:.87rem}
+  .variant .v-diff b{color:var(--teal)}
+  .core-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0 4px}
+  @media (max-width:680px){.core-grid{grid-template-columns:1fr}}
+  .core-grid .core{border-top:3px solid var(--teal);padding:12px 4px 0}
+  .core-grid .core .cn{font-family:"IBM Plex Mono",monospace;font-size:.74rem;letter-spacing:.14em;color:var(--teal);font-weight:600;display:block;margin-bottom:3px}
+  .core-grid .core h4{margin:0 0 5px;font-size:1rem;font-weight:900}
+  .core-grid .core p{margin:0;font-size:.88rem;color:var(--ink-2);line-height:1.75}
+
+  /* ---------- Data-driven decisions ---------- */
+  .needs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0 4px}
+  @media (max-width:760px){.needs{grid-template-columns:1fr}}
+  .needs .need{border:1px solid var(--line);border-radius:var(--radius);padding:16px 17px;background:var(--surface);box-shadow:var(--shadow)}
+  .needs .need .nk{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.14em;color:var(--teal);font-weight:600;display:block;margin-bottom:5px}
+  .needs .need h4{margin:0 0 6px;font-size:1rem;font-weight:900;line-height:1.55}
+  .needs .need p{margin:0;font-size:.88rem;color:var(--ink-2);line-height:1.75}
+  .ddm-flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0 6px}
+  .ddm-flow .chip{background:var(--teal-tint);color:var(--ink);border-radius:999px;padding:8px 15px;font-size:.88rem;font-weight:700;display:inline-flex;align-items:center;min-height:2.4rem}
+  .ddm-flow .arr{color:var(--teal);font-weight:900}
+  .ddm-flow .chip.alt{background:var(--ochre-tint)}
+  .sme-box{border:1.5px solid var(--teal);border-radius:var(--radius);padding:19px 21px 8px;margin-top:16px;background:var(--surface)}
+  .sme-box .sme-title{font-weight:900;margin:0 0 6px;font-size:1.02rem}
+  .sme-box .sme-title span{color:var(--teal);font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.12em;display:block;font-weight:600;margin-bottom:2px}
+  .sme-box>p{font-size:.92rem;color:var(--ink-2);line-height:1.85}
+  .sme-roles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0 12px}
+  @media (max-width:680px){.sme-roles{grid-template-columns:1fr}}
+  .sme-roles .role{border-top:3px solid var(--ochre);padding:11px 4px 0}
+  .sme-roles .role h4{margin:0 0 4px;font-size:.98rem;font-weight:900}
+  .sme-roles .role p{margin:0;font-size:.87rem;color:var(--ink-2);line-height:1.75}
+  .fail-cases .case{border-top:3px solid var(--red)}
+  .fail-cases .case .co{color:var(--red)}
+  .fail-cases .case .tag{background:var(--red-tint);color:var(--red)}
+
+  /* ---------- Improvement ---------- */
+  .improve-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:16px 0 4px}
+  @media (max-width:680px){.improve-list{grid-template-columns:1fr}}
+  .improve-list .item{display:flex;gap:13px;padding:15px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+  .improve-list .n{
+    font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--teal);font-size:1rem;flex:0 0 auto;line-height:1.6;
+  }
+  .improve-list h4{margin:0 0 3px;font-size:.98rem;font-weight:900}
+  .improve-list p{margin:0;font-size:.87rem;color:var(--ink-2);line-height:1.75}
+  .quality{display:flex;flex-wrap:wrap;gap:9px;margin:10px 0 4px}
+  .quality .q{
+    border:1.5px solid var(--line-strong);border-radius:10px;padding:9px 14px;font-size:.9rem;font-weight:700;
+    display:inline-flex;align-items:center;gap:8px;min-height:2.6rem;background:var(--surface);
+  }
+  .quality .q::before{content:"✓";color:var(--teal);font-weight:900}
+  .rule{
+    margin-top:18px;background:var(--teal-deep);color:#eef6f2;border-radius:var(--radius);padding:19px 21px;
+  }
+  @media (prefers-color-scheme: dark){.rule{background:var(--teal-tint);color:var(--ink)}}
+  .rule .r-title{font-family:"Shippori Mincho B1",serif;font-size:1.12rem;font-weight:800;margin:0 0 6px}
+  .rule p{margin:0;font-size:.92rem;line-height:1.85;opacity:.92}
+
+  /* ---------- Score / practice example ---------- */
+  .score-card{
+    display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;
+    border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);
+    box-shadow:var(--shadow);padding:22px;margin:16px 0 6px;
+  }
+  @media (max-width:680px){.score-card{grid-template-columns:1fr}}
+  .score-big{font-family:"Shippori Mincho B1",serif;text-align:center;line-height:1.15}
+  .score-big .fraction{font-size:3rem;font-weight:800;color:var(--teal)}
+  .score-big .fraction small{font-size:1.4rem;color:var(--ink-3)}
+  .score-big .of{display:block;font-size:.8rem;color:var(--ink-3);font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;letter-spacing:.06em;margin-top:4px}
+  .score-bar{height:10px;border-radius:999px;background:var(--bg-soft);overflow:hidden;margin:10px 0 14px;border:1px solid var(--line)}
+  .score-bar i{display:block;height:100%;width:80%;background:var(--teal-bright);border-radius:999px}
+  .score-card ul{margin:0;padding-left:1.2em;font-size:.92rem;line-height:1.8}
+  .score-card li{margin-bottom:4px}
+  .score-card li::marker{color:var(--teal)}
+  table.data{width:100%;border-collapse:collapse;font-size:.9rem;margin:12px 0 6px}
+  table.data caption{text-align:left;font-weight:900;font-size:.95rem;padding-bottom:8px}
+  table.data th,table.data td{padding:10px 12px;text-align:left;vertical-align:top;line-height:1.65}
+  table.data thead th{border-bottom:2px solid var(--teal);font-weight:900;white-space:nowrap}
+  table.data tbody th{font-weight:900;white-space:nowrap;border-bottom:1px solid var(--line)}
+  table.data tbody td{border-bottom:1px solid var(--line);color:var(--ink-2)}
+  table.data tbody td b{color:var(--ink)}
+  .fund-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0 4px}
+  @media (max-width:680px){.fund-cards{grid-template-columns:1fr}}
+  .fund{border:1px solid var(--line);border-radius:var(--radius);padding:17px 19px;background:var(--surface-2)}
+  .fund h4{margin:0 0 10px;font-size:1.05rem;font-weight:900}
+  .fund h4 span{color:var(--teal);font-family:"IBM Plex Mono",monospace;font-size:.74rem;letter-spacing:.12em;display:block;font-weight:600;margin-bottom:2px}
+  .fund dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 16px;font-size:.9rem}
+  .fund dt{color:var(--ink-3);font-weight:700}
+  .fund dd{margin:0;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+  .fund dd .yield{color:var(--teal);font-weight:900}
+  .next-box{
+    margin-top:18px;border:1.5px dashed var(--teal);border-radius:var(--radius);padding:17px 20px;background:var(--teal-tint);
+  }
+  .next-box p{margin:0;font-size:.94rem;line-height:1.85}
+  .next-box .when{font-family:"Shippori Mincho B1",serif;font-weight:800;font-size:1.08rem}
+
+  /* ---------- Related pages ---------- */
+  .related{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0 4px}
+  @media (max-width:680px){.related{grid-template-columns:1fr}}
+  .rel-card{
+    display:block;text-decoration:none;color:var(--ink);background:var(--surface);
+    border:1px solid var(--line);border-radius:var(--radius);padding:19px 20px 16px;box-shadow:var(--shadow);
+  }
+  .rel-card:hover{border-color:var(--teal)}
+  .rel-card:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+  .rel-card .rel-kicker{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.16em;color:var(--teal);font-weight:600;display:block;margin-bottom:4px}
+  .rel-card h3{margin:0 0 7px;font-size:1.12rem;font-weight:900;line-height:1.5}
+  .rel-card p{margin:0 0 12px;font-size:.89rem;color:var(--ink-2);line-height:1.8}
+  .rel-card .rel-go{font-size:.88rem;font-weight:900;color:var(--teal)}
+
+  footer{border-top:1px solid var(--line);margin-top:44px;padding:22px 0 40px;color:var(--ink-3);font-size:.82rem;line-height:1.8}
+  footer p{margin:0}
+
+  @media print{
+    .toc,.quiz .retry{display:none!important}
+    .hero{background:#fff;color:#000;border-bottom:2px solid #000}
+    .hero .lead,.hero .kicker,.hstat .lbl{color:#333}
+    .hstat{border-color:#999;background:#fff}
+    section{padding-top:24px}
+    body{font-size:12.5px}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker">DATA ANALYSIS — BASICS</p>
+    <h1>データ分析入門<br />まとめシート</h1>
+    <p class="lead">データ（事実の集まり）から<strong>インサイト（行動につながる気づき）</strong>を引き出し、賢い決断をするための入門講義を、1枚に圧縮した復習シートです。</p>
+    <div class="hero-stats">
+      <div class="hstat"><span class="num">6<small> ステップ</small></span><span class="lbl">循環する基本プロセス</span></div>
+      <div class="hstat"><span class="num">4<small> / 5 問</small></span><span class="lbl">理解度クイズの結果</span></div>
+      <div class="hstat"><span class="num">1<small> サイクル</small></span><span class="lbl">実践例：カフェの午後客数を改善する</span></div>
+    </div>
+  </div>
+</header>
+
+<nav class="toc" aria-label="目次">
+  <div class="wrap">
+    <a href="#what"><span class="n">01</span>データ分析とは</a>
+    <a href="#process"><span class="n">02</span>基本プロセス</a>
+    <a href="#tools"><span class="n">03</span>道具とスキルアップ</a>
+    <a href="#usage"><span class="n">04</span>役立つ場面</a>
+    <a href="#types"><span class="n">05</span>分析の4類型と事例</a>
+    <a href="#variations"><span class="n">06</span>プロセスのバリエーション</a>
+    <a href="#data-driven"><span class="n">07</span>データ主導の意思決定</a>
+    <a href="#improve"><span class="n">08</span>プロセスの改善</a>
+    <a href="#score"><span class="n">09</span>あなたの到達点</a>
+    <a href="#related"><span class="n">10</span>関連ページ</a>
+    <a class="ext" href="glossary.html">用語集<span class="arr" aria-hidden="true">↗</span></a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- 01 -->
+  <section id="what">
+    <div class="sec-head"><span class="no">01</span><h2>データ分析とは</h2></div>
+    <p class="sec-lead">データそのものに価値があるのではなく、<strong>決断に使える気づきに変えること</strong>に価値があります。集めて整理するだけでは分析ではなく、パターンを見つけて決断に使えて初めて分析になります。</p>
+
+    <div class="flow3" role="img" aria-label="データから情報、インサイトへの変換の流れ">
+      <div class="cell">
+        <span class="tag">DATA</span>
+        <h4>データ</h4>
+        <p>事実の記録そのもの。昨日の歩数6,000歩、売上10万円、来客数42人。</p>
+      </div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="cell">
+        <span class="tag">INFORMATION</span>
+        <h4>情報</h4>
+        <p>並べて比べられる形にしたもの。「先週より減っている」と分かる状態。</p>
+      </div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="cell insight">
+        <span class="tag">INSIGHT</span>
+        <h4>インサイト</h4>
+        <p>次に何をすべきかが見える気づき。「雨の日に歩数と売上が両方落ちる」など。</p>
+      </div>
+    </div>
+
+    <div class="metaphors">
+      <div class="metaphor">
+        <span class="word">粘土</span>
+        <p>データは分析の土台。ホームズの言う通り、粘土（データ）なしではレンガは作れません。</p>
+      </div>
+      <div class="metaphor">
+        <span class="word">探偵の推理</span>
+        <p>分析は、手がかりを集めて事件を解決する探偵の仕事と同じ。仮説を立て、証拠で確かめます。</p>
+      </div>
+      <div class="metaphor">
+        <span class="word">魔法のレンズ</span>
+        <p>データ → インサイトへの変換がレンズの役割。生の数字では見えないパターンが見えるようになります。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section id="process">
+    <div class="sec-head"><span class="no">02</span><h2>基本プロセス（6ステップ）</h2></div>
+    <p class="sec-lead">Googleが提唱する進め方で、一度で終わらず<strong>循環</strong>します。前のステップの質が、次のステップを決めます。</p>
+
+    <div class="cycle-note">
+      <span class="ic">↻</span>
+      <p><strong>一直線ではありません。</strong>分析中に異常値を見つければ Process に戻り、データ不足に気づけば Prepare に戻ります。実務で一番往復が多いのは <strong>Process ⇄ Analyze</strong> です。</p>
+    </div>
+
+    <div class="steps">
+      <article class="step">
+        <span class="badge important">最も重要</span>
+        <div class="top"><span class="num">1</span><div><span class="en">ASK</span><h4>質問を立てる</h4></div></div>
+        <p class="do">解くべき問題を具体化する。「売上を上げたい」ではなく「どの商品の売上が、いつから下がっているか？」まで落とし込み、誰のための分析か、成功の基準も決めます。</p>
+        <p class="purpose"><b>目的：</b>方向を間違えないこと。問いがずれれば、完璧な分析でも役に立ちません。</p>
+      </article>
+
+      <article class="step">
+        <div class="top"><span class="num">2</span><div><span class="en">PREPARE</span><h4>準備する</h4></div></div>
+        <p class="do">必要なデータを集める。どこから取るか、期間はどれくらいか、個人情報の扱いは大丈夫かを確認しながら収集します。</p>
+        <p class="purpose"><b>目的：</b>根拠になる材料を、偏りなく揃えること。範囲が足りないと結論も偏ります。</p>
+      </article>
+
+      <article class="step">
+        <span class="badge time">最も時間がかかる</span>
+        <div class="top"><span class="num">3</span><div><span class="en">PROCESS</span><h4>処理する</h4></div></div>
+        <p class="do">集めたデータを使える形に整える。重複を消す、欠けている値を扱う、日付や表記のゆれを統一する、複数のデータを組み合わせる（結合）。地味ですが実務の大半はここです。</p>
+        <p class="purpose"><b>目的：</b>信頼できるデータにすること。Garbage in, garbage out（ゴミを入れればゴミが出る）。</p>
+      </article>
+
+      <article class="step">
+        <div class="top"><span class="num">4</span><div><span class="en">ANALYZE</span><h4>分析する</h4></div></div>
+        <p class="do">集計・比較して、傾向やパターン、原因らしきものを見つける。まず全体の特徴を掴んでから、仮説を数字で確かめます。</p>
+        <p class="purpose"><b>目的：</b>パターンと原因の手がかりを見つけること。</p>
+      </article>
+
+      <article class="step">
+        <div class="top"><span class="num">5</span><div><span class="en">SHARE</span><h4>共有する</h4></div></div>
+        <p class="do">グラフや表で、相手が判断できる形で伝える。数字を並べるのではなく、「結論と根拠」を伝えるのが大事です。</p>
+        <p class="purpose"><b>目的：</b>相手と認識を揃え、判断してもらうこと。</p>
+      </article>
+
+      <article class="step">
+        <div class="top"><span class="num">6</span><div><span class="en">ACT</span><h4>行動する</h4></div></div>
+        <p class="do">分析をもとに施策を実行し、効果を測る。その結果がまた次の Ask につながります。</p>
+        <p class="purpose"><b>目的：</b>分析を価値に変えること。決めて実行しなければ、分析は報告で終わります。</p>
+      </article>
+    </div>
+
+    <p class="vs-title">復習ポイント <span class="warn">— クイズで迷ったのはここ</span></p>
+    <div class="vs">
+      <div class="card prep">
+        <span class="vs-en">PREPARE</span>
+        <h4>＝ <span class="big">集める</span></h4>
+        <p>どのデータを、どこから、どの期間分取るか決めて収集する段階。まだ中身の手直しはしません。</p>
+      </div>
+      <div class="card proc">
+        <span class="vs-en">PROCESS</span>
+        <h4>＝ <span class="big">整える</span></h4>
+        <p>収集したあとの重複削除、空欄（欠損）への対応、表記の統一といったクリーニングは、すべてこちらです。</p>
+      </div>
+    </div>
+
+    <div class="quiz" id="quiz" aria-label="ミニクイズ">
+      <p class="q-label">MINI CHECK — 1問だけ再確認</p>
+      <p class="q-text">集めた売上データに、同じ注文の重複・日付表記のバラつき・空欄がありました。これらを直して使える形に整えるのは、どの段階ですか？</p>
+      <div class="opts">
+        <button type="button" class="opt" data-correct="false">A. Prepare — データを集める段階</button>
+        <button type="button" class="opt" data-correct="true">B. Process — データを整える段階</button>
+        <button type="button" class="opt" data-correct="false">C. Analyze — 集計して傾向を見つける段階</button>
+      </div>
+      <p class="feedback" id="quiz-feedback" role="status"></p>
+      <button type="button" class="retry" id="quiz-retry">もう一度挑戦する</button>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section id="tools">
+    <div class="sec-head"><span class="no">03</span><h2>道具とスキルアップ</h2></div>
+    <p class="sec-lead">まず基礎（整理・結合・可視化）ができるかを点検し、それから専門的な道具へ。料理の基本をマスターしてから、難しいレシピに挑戦する順序です。</p>
+
+    <div class="road">
+      <div class="stage">
+        <span class="lv">STEP 1 — 基礎</span>
+        <h4>土台のスキル</h4>
+        <ul>
+          <li>データを整理できる（重複・欠け・表記ゆれを直す）</li>
+          <li>複数のデータを組み合わせられる</li>
+          <li>グラフや表で分かりやすく伝えられる</li>
+        </ul>
+      </div>
+      <div class="stage">
+        <span class="lv">STEP 2 — 道具</span>
+        <h4>SQL と Tableau</h4>
+        <ul>
+          <li>SQL：取り出して集計する</li>
+          <li>Tableau：見せて気づく</li>
+          <li>組み合わせ：SQLで整えて抜く → Tableauで可視化して伝える</li>
+        </ul>
+      </div>
+      <div class="stage">
+        <span class="lv">STEP 3 — 発展</span>
+        <h4>Python ＋ 統計</h4>
+        <ul>
+          <li>分析の自動化・大量処理</li>
+          <li>予測モデルや異常検知へ</li>
+          <li>データサイエンティストへの道</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="toolgrid">
+      <div class="tool">
+        <h4>SQL<span class="role">取り出して集計する</span></h4>
+        <p>データベースへの命令文。<code>JOIN</code> が「複数のデータを組み合わせる」部分、<code>GROUP BY</code> が「グループごとに集計する」部分です。大量データから必要な部分だけを正確に抜けるのが強み。</p>
+      </div>
+      <div class="tool">
+        <h4>Tableau<span class="role">見せて気づく</span></h4>
+        <p>ドラッグ＆ドロップでグラフ化するツール。棒グラフ・折れ線・ダッシュボードを作り、フィルターを動かしながら傾向を探ります。コードなしで Share まで進められるのが強み。</p>
+      </div>
+    </div>
+
+    <pre class="code" aria-label="SQLの例"><span class="kw">SELECT</span> 商品名, <span class="kw">SUM</span>(売上金額) <span class="kw">AS</span> 売上合計
+<span class="kw">FROM</span> 売上データ
+<span class="kw">JOIN</span> 商品マスタ <span class="kw">ON</span> 売上データ.商品ID = 商品マスタ.商品ID
+<span class="kw">WHERE</span> 日付 &gt;= '2026-11-01'
+<span class="kw">GROUP BY</span> 商品名
+<span class="kw">ORDER BY</span> 売上合計 <span class="kw">DESC</span>;</pre>
+    <p class="code-cap">例：2026年11月以降の商品別売上を、売上データと商品マスタを結合して集計する</p>
+
+    <h3 class="sub">発展で学ぶ統計技術の応用例</h3>
+    <div class="stats-grid">
+      <div class="stat-item"><span class="dot"></span><p><b>A/Bテストと仮説検定</b> — Webページを2案出し、成約率の差が偶然でないか確かめる</p></div>
+      <div class="stat-item"><span class="dot"></span><p><b>回帰分析</b> — 広告費や天気から売上を予測する式を作る。「何がどれだけ効いているか」が数字で分かる</p></div>
+      <div class="stat-item"><span class="dot"></span><p><b>相関と因果の区別</b> — 一緒に動いているだけで、原因ではないものを見抜く</p></div>
+      <div class="stat-item"><span class="dot"></span><p><b>サンプリングと信頼区間</b> — 一部のデータから全体を推し量り、推測の幅も一緒に示す</p></div>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section id="usage">
+    <div class="sec-head"><span class="no">04</span><h2>役立つ場面</h2></div>
+    <p class="sec-lead">データ分析は専門職だけのスキルではなく、「勘」から「根拠ある判断」に変える汎用スキルです。問題を分解する力、数字で確かめる力、根拠を持って伝える力は、職種が変わってもそのまま使えます。</p>
+
+    <h3 class="sub">ビジネスへの影響</h3>
+    <div class="impact">
+      <div class="item"><h4>事実に基づく判断</h4><p>感覚や経験だけでなく、客観的な情報をもとに決定できる。根拠が共有できるので合意が早く、後から検証もできる。</p></div>
+      <div class="item"><h4>機会の発見</h4><p>新しいトレンドや顧客ニーズを見つけ、商品・サービスの改善や新規開発につなげる。</p></div>
+      <div class="item"><h4>リスクの軽減</h4><p>過去のデータから失敗のパターンを避け、売上低下や解約の兆しを早期に掴む。</p></div>
+      <div class="item"><h4>効率の向上</h4><p>業務プロセスの問題点を特定し、改善策を立てて効率化を図る。</p></div>
+    </div>
+    <p style="margin-top:14px">長期的には、現場の改善にとどまらず<strong>「どこで戦い、何に資源を使うか」という戦略そのもの</strong>が、データで確かめながら進路を修正する「仮説検証型」に変わります。数字で伸びない事業から撤退する判断も、戦略のうちです。</p>
+
+    <div class="example">
+      <p class="ex-title"><span>WORKED EXAMPLE</span>具体例：スーパーの「夕方に惣菜が売れ残り、廃棄が多い」</p>
+      <ol>
+        <li><b>問題設定：</b>基準を「廃棄率を下げつつ、18時台の欠品は増やさない」と置く</li>
+        <li><b>収集：</b>時間帯別売上、廃棄数、天気、曜日、特売情報を集める</li>
+        <li><b>変換・整理：</b>商品名の表記を統一し、返品や修正伝票を取り除く</li>
+        <li><b>分析：</b>雨の平日は19時以降の売上が落ち、揚げ物だけ廃棄が集中。晴れた土曜は逆に早めに売り切れる</li>
+        <li><b>共有：</b>曜日 × 天気ごとの廃棄率を表にして店長と共有</li>
+        <li><b>行動：</b>雨の平日は製造を後ろ倒し＋少量追加方式に、土曜は前倒しに変更。翌月に廃棄率と欠品を再測定</li>
+      </ol>
+    </div>
+
+    <h3 class="sub">日常生活での活用</h3>
+    <p>やることは仕事と同じ、小さな循環です。家計なら支出の分類から「平日昼のコンビニが月1万円」という漏れが見え、健康なら睡眠と翌日の調子を並べて自分に合った就寝時刻が分かります。</p>
+    <div class="daily-cycle" aria-label="日常生活での小さな循環">
+      <span class="chip">記録する</span><span class="arr">→</span>
+      <span class="chip">見返す</span><span class="arr">→</span>
+      <span class="chip">パターンを1つ見つける</span><span class="arr">→</span>
+      <span class="chip">行動を1つだけ変える</span>
+    </div>
+    <ul class="tight">
+      <li><strong>1回で判断しない</strong> — 1〜2週間並べて傾向を見る</li>
+      <li><strong>比べる基準を持つ</strong> — 「高い／安い」ではなく、先月比・平均と比べてどうか</li>
+      <li><strong>変えるのは1つだけ</strong> — 全部変えると何が効いたか分からない</li>
+      <li><strong>思い込みを仮説にする</strong> — 「朝型だとうまくいく」を記録で確かめる</li>
+    </ul>
+  </section>
+
+  <!-- 05 -->
+  <section id="types">
+    <div class="sec-head"><span class="no">05</span><h2>分析の4類型と企業事例</h2></div>
+    <p class="sec-lead">ビジネスアナリティクス（数学と統計を使ってデータを集め・分析・解釈し、より良いビジネス判断をすること）には、深さの違う<strong>4つの類型</strong>があります。セクション02の <strong>Analyze を「どこまで踏み込むか」で分けたもの</strong>と捉えると、これまでの学習とつながります。下に行くほど、難易度も価値も上がります。</p>
+
+    <div class="ladder">
+      <article class="type">
+        <span class="lvl">1</span>
+        <h4>記述的分析<span class="en">DESCRIPTIVE</span></h4>
+        <p class="q"><b>問い：何が起きたか？</b> — 過去データを解釈し、傾向やパターンを見ます。すべての分析の出発点です。</p>
+      </article>
+      <article class="type">
+        <span class="lvl">2</span>
+        <h4>診断的分析<span class="en">DIAGNOSTIC</span></h4>
+        <p class="q"><b>問い：なぜ起きたか？</b> — 見つけた傾向の裏にある、問題の根本原因を探ります。</p>
+      </article>
+      <article class="type">
+        <span class="lvl">3</span>
+        <h4>予測的分析<span class="en">PREDICTIVE</span></h4>
+        <p class="q"><b>問い：何が起きそうか？</b> — 過去の情報をもとに、将来の結果を予測します。</p>
+      </article>
+      <article class="type">
+        <span class="lvl">4</span>
+        <h4>処方的分析<span class="en">PRESCRIPTIVE</span></h4>
+        <p class="q"><b>問い：どうすべきか？</b> — テストなどの手法を使い、どの選択肢が最良の結果を生むか決めます。</p>
+      </article>
+    </div>
+
+    <p style="margin-top:16px">似た言葉に<strong>データサイエンス</strong>があります。ビジネスアナリティクスの目的は「意思決定への活用」（予算、予測、商品開発など）で、データサイエンスはアルゴリズムや統計モデル自体の構築が中心（データ整形、プログラミング、モデリング）です。役割は違いますが、どちらも組織に欠かせません。</p>
+
+    <h3 class="sub">企業事例：4類型はこう使われる</h3>
+    <div class="cases">
+      <article class="case">
+        <span class="co">MICROSOFT</span>
+        <h4>オフィス移転で生産性と協働を改善</h4>
+        <p>エンジニア1,200人のグループを5棟から4棟へ移転。「近くの席ほど協働が増える」という仮説を、従業員のカレンダーのメタデータで検証しました。前回の<strong>人事分析</strong>そのものの事例です。</p>
+        <p class="result"><b>結果：</b>会議の移動時間が<b>46%減</b>（週100時間・年約52万ドルの節約）。1人あたりの会議数は週14回→18回に増え、平均時間は0.85時間→0.77時間に短縮。</p>
+        <div class="tags"><span class="tag">記述的</span><span class="tag">診断的</span></div>
+      </article>
+
+      <article class="case">
+        <span class="co">UBER</span>
+        <h4>顧客サポート支援ツール COTA</h4>
+        <p>機械学習と自然言語処理で、問い合わせ対応の速度と正確さを支援するツール COTA を開発。v1で解決時間を10%短縮し、改良版 v2 は、まず両群とも v1 を使う <b>A/Aテスト</b>、続いて1か月の <b>A/Bテスト</b> で検証しました（セクション03の A/Bテスト の実例です）。</p>
+        <p class="result"><b>結果：</b>チケットあたりの処理時間が<b>約7%減</b>、満足度も微増。数百万ドル規模の節約が見込めると判断し、導入を決めました。</p>
+        <div class="tags"><span class="tag">処方的</span></div>
+      </article>
+
+      <article class="case">
+        <span class="co">BLUE APRON</span>
+        <h4>注文とレシピの需要予測</h4>
+        <p>ミールキット宅配の同社は、毎週の需要を予測して食材の腐敗と欠品を防ぎます。変数は3分類です。<b>顧客</b>（注文頻度の履歴）、<b>レシピ</b>（過去の好み）、<b>季節性</b>（時期による注文パターン）。精度の検証には回帰分析を使いました。</p>
+        <p class="result"><b>結果：</b>予測誤差（RMSE）は一貫して<b>6%未満</b>と高精度。顧客の好みの変化も追えるようになりました。</p>
+        <div class="tags"><span class="tag">予測的</span></div>
+      </article>
+
+      <article class="case">
+        <span class="co">PEPSICO</span>
+        <h4>消費者ターゲティング基盤 Pep Worx</h4>
+        <p>クラウド型のデータ基盤 Pep Worx で、どの地域に・どの商品を・どれだけ置くかを判断します。Quaker Overnight Oats では、米国の1億1,000万世帯のデータから、関心が高いと見込まれる世帯を絞り込み、その世帯が利用する小売店に展開を集中させました。</p>
+        <p class="result"><b>結果：</b>特定した<b>2,400万世帯</b>が、発売後12か月の売上成長の<b>80%</b>を牽引しました。</p>
+        <div class="tags"><span class="tag">予測的</span><span class="tag">処方的</span></div>
+      </article>
+    </div>
+
+    <div class="loopback">
+      <b>締めの一言（HBS Online 講師 Jan Hammond 教授）：</b>「会議で他の人が意見だけの中、自分がデータで裏付けた提案を持てれば、影響力を持てる」。セクション02の Share と Act がなぜ大事か、という話とまったく同じです。
+    </div>
+
+    <p class="source-note">出典：Harvard Business School Online ブログ「4 Examples of Business Analytics in Action」（Matt Gavin、2019年1月15日公開／2026年5月21日更新）</p>
+  </section>
+
+  <!-- 06 -->
+  <section id="variations">
+    <div class="sec-head"><span class="no">06</span><h2>プロセスのバリエーション比較</h2></div>
+    <p class="sec-lead">データ分析プロセスに、すべてのアナリストが一様に従う<strong>唯一の定義はありません</strong>。Googleの6ステップを基準に、代表的な4つのモデルを並べると、違いは「核」ではなく<strong>分け方と力点</strong>にあることが分かります。他のモデルに出会ったら、新しい手順として覚え直すのではなく、Googleのどのステップを分解・言い換えたものかで対応づけるのが読み方です。</p>
+
+    <div class="origin-note">
+      <span class="ic">ORIGIN</span>
+      <p><b>そもそもの起源：</b>データ分析は統計学に根ざし、その始まりは<b>古代エジプトのピラミッド建設</b>だと考古学者は考えています。エジプトの書記がパピルスに残した計算や記録は、今日のスプレッドシートやチェックリストの最古の例とみなされます。道具は変わっても、「記録して、整えて、判断に使う」という核は古代から同じです。</p>
+    </div>
+
+    <div class="variants">
+      <article class="variant base">
+        <div class="v-head"><span class="v-org">GOOGLE — 基準</span><h4>Google データアナリティクス認定のプロセス</h4><span class="v-count">6ステップ</span></div>
+        <div class="v-flow" aria-label="Googleの6ステップの流れ">
+          <span class="vchip">問う</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">準備</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">処理</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">分析</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">共有</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">行動する</span>
+        </div>
+        <p>このシートの土台（セクション02）。問う＝ビジネス課題・目的・質問、準備＝データの生成・収集・保存・管理、処理＝クリーニングとデータ完全性、分析＝探索・ビジュアライゼーション・分析、共有＝結果の伝達と解釈、行動する＝知見を問題解決に活用、という定義です。</p>
+        <p class="v-diff"><b>位置づけ：</b>以下の4モデルは、すべてこの6ステップと対応づけて読めます。</p>
+      </article>
+
+      <article class="variant">
+        <div class="v-head"><span class="v-org">EMC（現 DELL EMC）</span><h4>EMCのデータ分析プロセス</h4><span class="v-count">6ステップ・循環型</span></div>
+        <div class="v-flow" aria-label="EMCの6フェーズの流れ">
+          <span class="vchip">発見</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">データの前処理</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">モデル計画</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">モデル構築</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">結果の伝達</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">運用化</span>
+        </div>
+        <p>David Dietrich 氏が作成した、典型的なビジネスプロジェクトの循環を映すモデル。フェーズは静的なマイルストーンではなく、各ステップが次につながり、最後は繰り返されます。各段階には「前進するのに十分な成果が出たか」をテストする主要な質問が置かれています。</p>
+        <p class="v-diff"><b>Googleとの違い：</b>「分析」が<b>モデル計画＋モデル構築</b>に分かれ、予測モデル作りが中心。終わりは「行動」ではなく、モデルを実務に組み込む<b>運用化</b>。データの準備が終わる前にモデリングを始めない、という歯止めが明示されています。</p>
+      </article>
+
+      <article class="variant">
+        <div class="v-head"><span class="v-org">SAS</span><h4>SASの反復プロセス</h4><span class="v-count">7ステップ・循環型</span></div>
+        <div class="v-flow" aria-label="SASの7ステップの流れ">
+          <span class="vchip">尋ねる</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">準備する</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">探索する</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">モデル</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">実行する</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">行動する</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">評価する</span>
+        </div>
+        <p>分析ソリューションのプロバイダー SAS が開発した、反復可能で信頼性が高く、予測可能な結果を出すためのモデル。循環的な性質は、<b>無限大（∞）の記号</b>の形で視覚化されます。「尋ねる・準備・モデル・行動」は他のモデルと共通です。</p>
+        <p class="v-diff"><b>Googleとの違い：</b>「分析」が<b>探索する＋モデル</b>に分かれる点に加え、決定的なのは行動の後に独立した<b>「評価する」</b>があること。成果を評価して、再び「尋ねる」に戻る設計になっています。セクション08の「プロセスの改善」を、プロセスの中に組み込んだ形とも言えます。</p>
+      </article>
+
+      <article class="variant">
+        <div class="v-head"><span class="v-org">PROJECT-BASED</span><h4>プロジェクトベースのプロセス</h4><span class="v-count">5ステップ</span></div>
+        <div class="v-flow" aria-label="プロジェクトベースの5ステップの流れ">
+          <span class="vchip">問題の特定</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">データ要件の設計</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">データの前処理</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">データ分析の実行</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">データのビジュアライゼーション</span>
+        </div>
+        <p>Vignesh Prajapati 氏が開発した、最もシンプルなモデル。問題の特定から始まり、分析前のデータの準備と処理を経て、データのビジュアライゼーションで終わります。ステップの多くは他のモデルと共通します。</p>
+        <p class="v-diff"><b>Googleとの違い：</b>他と大きく違うのは、6番目の<b>行動（Act）フェーズがない</b>こと。可視化が終点なので、「分析プロジェクト」としては完結しても、意思決定と実行はプロセスの外にあります。使うときは Act を自分で足す意識が必要です。</p>
+      </article>
+
+      <article class="variant">
+        <div class="v-head"><span class="v-org">BIG DATA</span><h4>ビッグデータ アナリティクス プロセス</h4><span class="v-count">9ステップ</span></div>
+        <div class="v-flow" aria-label="ビッグデータ分析の9ステップの流れ">
+          <span class="vchip">ビジネスケースの評価</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">データの特定</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">データの取得とフィルタリング</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">データ抽出</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">データ検証とクリーニング</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">データ集約と表現</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">データ分析</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">データビジュアライゼーション</span><span class="varr" aria-hidden="true">→</span>
+          <span class="vchip">分析結果の活用</span>
+        </div>
+        <p>Thomas Erl、Wajid Khattak、Paul Buhler の著書『Big Data Fundamentals: Concepts, Drivers &amp; Techniques』で提案されたモデル。ステップが他より3〜4つ多く見えます。</p>
+        <p class="v-diff"><b>Googleとの違い：</b>実は新しいことを足したのではなく、Googleで言う<b>Prepare と Process を細かく分解しただけ</b>です。特定→取得→抽出→検証・クリーニング→集約と、分析に入る前の収集・準備・整形に重点があります。大量データを扱う現場向けの詳細版です。</p>
+      </article>
+    </div>
+
+    <h3 class="sub">どのモデルにも現れる「共通の核」</h3>
+    <div class="core-grid">
+      <div class="core"><span class="cn">CORE 1</span><h4>疑問・問題から始める</h4><p>発見、尋ねる、問題の特定、ビジネスケースの評価——名前は違っても、最初は必ず「何を解くか」です。</p></div>
+      <div class="core"><span class="cn">CORE 2</span><h4>分析の前に、準備と処理</h4><p>どのモデルも、データを集め・整える工程を分析の前に置きます。ここを飛ばしてモデリングや分析に入らないのが共通の戒めです。</p></div>
+      <div class="core"><span class="cn">CORE 3</span><h4>共有し、行動に移す</h4><p>結果の伝達、ビジュアライゼーション、運用化、結果の活用——発見を伝えて使って初めて価値になります（プロジェクトベース型だけは、この部分が弱い点に注意）。</p></div>
+    </div>
+
+    <div class="loopback">
+      <b>たとえで言うと、現実の建築と同じです。</b>建て方（モデル）は様々でも、基礎（核）は同じ。だから土台はGoogleの6ステップで覚え、他のモデルは「言い換えと分解の違い」として対応づければ十分です。どのモデルを選んでも、核が押さえられていればアプローチは効果的になります。
+    </div>
+
+    <p class="source-note">出典：Google データアナリティクス認定プログラム教材「データ分析プロセスの原点」（EMC／Dell EMC、SAS、Vignesh Prajapati のプロジェクトベースモデル、Erl 他『Big Data Fundamentals』の各プロセス紹介を含む）</p>
+  </section>
+
+  <!-- 07 -->
+  <section id="data-driven">
+    <div class="sec-head"><span class="no">07</span><h2>データ主導の意思決定</h2></div>
+    <p class="sec-lead"><strong>データ主導の意思決定（data-driven decision-making）とは、データに基づいてビジネス戦略を導くこと</strong>です。私たちは日常でも、フィットネストラッカーを装着したときや、商品レビューを読んで購入を決めるときにデータを使っています。ビジネスでの顧客理解、プロセス改善、従業員の生産性向上もその延長ですが、それらはまだ<strong>氷山の一角</strong>です。データを使ってできる最も有益なことの一つが、この意思決定そのものをデータ主導にすることです。</p>
+
+    <h3 class="sub">最初のステップは「事業ニーズの把握」＝ Ask</h3>
+    <p>出発点はデータではなく、<strong>解決する必要がある問題</strong>です。セクション02の Ask（問題設定）と同じで、問題が定義できて初めて、データを見つけて分析する意味が生まれます。講義で挙げられた問題の例は、分野がまったく違います。</p>
+
+    <div class="needs">
+      <article class="need">
+        <span class="nk">NEED 1 — 競争</span>
+        <h4>ブランド認知を高めたい</h4>
+        <p>新しい会社が、より規模の大きく有名な競合企業と戦うために、自社の認知をどう広げるかという課題です。</p>
+      </article>
+      <article class="need">
+        <span class="nk">NEED 2 — 調達</span>
+        <h4>持続可能な調達先を見つけたい</h4>
+        <p>製品改良のために、よりサステナブルでエシカルなサプライヤーから部品を調達する方法を見つけ出す課題です。</p>
+      </article>
+      <article class="need">
+        <span class="nk">NEED 3 — 人事</span>
+        <h4>定着率の低さを解決したい</h4>
+        <p>従業員の不満やエンゲージメント、満足度、会社への定着率の低さを解決する課題です。人事分析（People Analytics）のテーマと直結します。</p>
+      </article>
+    </div>
+
+    <p style="margin-top:16px">問題が定義されると、データアナリストはデータを見つけ、分析・活用して<strong>トレンド、パターン、関連性</strong>を明らかにします。そこから導かれる戦略には、2つの行き先があります。</p>
+
+    <div class="ddm-flow" aria-label="データ主導の意思決定の流れ">
+      <span class="chip">事業ニーズ（問題）を定義</span><span class="arr" aria-hidden="true">→</span>
+      <span class="chip">データを見つけ、分析・活用</span><span class="arr" aria-hidden="true">→</span>
+      <span class="chip">トレンド・パターン・関連性を明らかに</span><span class="arr" aria-hidden="true">→</span>
+      <span class="chip alt">戦略：過去の成功に沿う ／ まったく新しい方向へ</span>
+    </div>
+
+    <h3 class="sub">事例：戦略が変わる3つの形</h3>
+    <div class="cases">
+      <article class="case">
+        <span class="co">STREAMING</span>
+        <h4>ストリーミングのレコメンド</h4>
+        <p>音楽や映画のストリーミング企業は、顧客が現在<strong>何を見て、何を聞いているか</strong>の情報を集めて分析し、インサイトを得て、<b>今後最も好まれそうなもの</b>を提案します。</p>
+        <p class="result"><b>結果：</b>顧客の満足度が高まり、リピーターが増えることで、会社の収益につながります。日常の「おすすめ」は、データ主導の意思決定が動いている姿です。</p>
+        <div class="tags"><span class="tag">予測的</span><span class="tag">処方的</span></div>
+      </article>
+
+      <article class="case">
+        <span class="co">E-COMMERCE</span>
+        <h4>eコマースという新しいビジネスモデル</h4>
+        <p>ほとんどの買い物が実店舗経由だったのは、それほど昔のことではありません。しかしデータによって、<b>消費者の志向が変わっている</b>ことが分かりました。</p>
+        <p class="result"><b>結果：</b>多くの企業が実店舗を持たない新しいビジネスモデルを構築し、個人がパソコンや携帯電話から直接買い物して、商品が自宅まで届けられる形に変えました。</p>
+        <div class="tags"><span class="tag">ビジネスモデルの転換</span></div>
+      </article>
+
+      <article class="case">
+        <span class="co">TELECOM</span>
+        <h4>固定電話から携帯電話への完全移行</h4>
+        <p>データ主導の意思決定は非常に強力で、<b>ビジネスの手法を全体から覆してしまう</b>こともあります。その代表が通信の移行です。</p>
+        <p class="result"><b>結果：</b>データをもとに、各企業は固定電話から携帯電話へ完全に移行しました。現場の小さな改善ではなく、事業の形そのものが変わった例です。</p>
+        <div class="tags"><span class="tag">事業全体の転換</span></div>
+      </article>
+
+      <article class="case">
+        <span class="co">ANALYST'S ROLE</span>
+        <h4>データアナリストの役割</h4>
+        <p>あらゆる業界の組織で、データアナリストは<strong>常により良いデータ主導の意思決定ができるよう推進する</strong>立場にあります。データをあらゆるビジネス戦略に組み込み、企業を成功に導くうえで重要な役割を果たします。</p>
+        <p class="result"><b>だからこそ大事なのは：</b>意思決定プロセスの中で、データがどのように関わっているかを理解しておくことです。</p>
+        <div class="tags"><span class="tag">Ask から Act まで</span></div>
+      </article>
+    </div>
+
+    <h3 class="sub">失敗例：データを使っても決め損なう4つの形</h3>
+    <p>データ主導は「データに従えば自動で正しくなる」仕組みではありません。上の成功例と裏表で、<strong>土台・問い・解釈・文脈</strong>のどこかが崩れると、データを使ったのに外す、という失敗が起きます。以下は講義とこれまでの復習で挙がった典型例です（企業名のある成功例とは違い、仕組みを理解するための一般的な例として読んでください）。</p>
+
+    <div class="cases fail-cases">
+      <article class="case">
+        <span class="co">FAIL 1 — 土台</span>
+        <h4>データ自体が悪い</h4>
+        <p>アイスクリームの新味を決めるアンケートを、<b>常連客にだけ</b>取れば、「いつもの濃厚な味」が1位になるのは当然です。新規客が求める軽い味は、最初から候補に入りません。空白や誤りの多い記録を使う場合も同じです。</p>
+        <p class="result"><b>何が起きるか：</b>分析の手順が正しくても、入力が偏っていれば結論も偏ります。<b>Garbage in, garbage out</b>（ゴミを入れればゴミが出る）です。</p>
+        <div class="tags"><span class="tag">Prepare</span><span class="tag">Process</span><span class="tag">偏り</span></div>
+      </article>
+
+      <article class="case">
+        <span class="co">FAIL 2 — 問いと指標</span>
+        <h4>追う指標が間違っている</h4>
+        <p>Web施策を<b>クリック率だけ</b>で比べると、目を引くが中身の薄い案が勝ちやすくなります。数字は改善したのに、購入率や顧客満足度は下がる、ということが起きます。</p>
+        <p class="result"><b>何が起きるか：</b>測る指標の選び方自体が失敗の種になります。Ask で「本当に良くしたいことは何か」を決め、指標と結び付けておく必要があります。</p>
+        <div class="tags"><span class="tag">Ask</span><span class="tag">指標の設計</span></div>
+      </article>
+
+      <article class="case">
+        <span class="co">FAIL 3 — 解釈</span>
+        <h4>相関を因果と取り違える</h4>
+        <p>2つの数字が<b>一緒に動いている（相関）</b>だけなのに、一方がもう一方の原因だと決めつけてしまう失敗です。たとえば「広告を多く出した地域で売上が高い」のは、広告の効果ではなく、もともと需要の高い地域だったからかもしれません。</p>
+        <p class="result"><b>何が起きるか：</b>効いていない要因に予算や人員を寄せ続け、本当の原因への対策が遅れます。A/Bテストなどで「変えたのは1つだけ」にして確かめるのが予防策です。</p>
+        <div class="tags"><span class="tag">Analyze</span><span class="tag">相関と因果</span></div>
+      </article>
+
+      <article class="case">
+        <span class="co">FAIL 4 — 文脈</span>
+        <h4>データだけで決めて文脈を無視する</h4>
+        <p>データは過去の記録なので、市場や顧客の行動が大きく変わる局面では、<b>過去のパターンがそのまま通用しません</b>。もう1つの形が、結論を先に決めて都合の良いデータだけを拾う「名前だけデータ駆動」です。</p>
+        <p class="result"><b>何が起きるか：</b>数字の上では正しく見えても、現場の実態とずれた決定になります。次の SME（内容領域専門家）の知見と組み合わせることが、この失敗への直接の対策です。</p>
+        <div class="tags"><span class="tag">Act</span><span class="tag">文脈</span><span class="tag">SME との連携</span></div>
+      </article>
+    </div>
+
+    <div class="loopback">
+      <b>失敗を防ぐ合言葉：</b>データ ＋ 正しい問い ＋ 人間の判断。4つの失敗は、それぞれ <b>Prepare／Process（土台）・Ask（問いと指標）・Analyze（解釈）・Act（文脈）</b> に対応します。どこで崩れたかを6ステップに戻って点検できれば、失敗は次の分析への教材になります。
+    </div>
+
+    <h3 class="sub">注意点：データ単体では強力にならない</h3>
+    <p>データ主導の意思決定にどれほど価値があっても、<strong>人間の経験、観察、時には直観と組み合わせなければ、データ単体ではそこまで強力にはなりません</strong>。セクション04で触れた「良い意思決定は、データ＋現場の知恵の組み合わせ」と同じ結論です。その組み合わせを担うのが、次の存在です。</p>
+
+    <div class="sme-box">
+      <p class="sme-title"><span>SUBJECT MATTER EXPERT — SME</span>内容領域専門家が、データと現場をつなぐ</p>
+      <p>最も有益なデータ主導の意思決定のためには、<strong>事業課題をよく知っている人々のインサイト</strong>を含めることが重要です。これらの人々は<strong>内容領域専門家（SME）</strong>と呼ばれ、データ分析の結果を見て、次の3つを行います。</p>
+      <div class="sme-roles">
+        <div class="role"><h4>矛盾を突き止める</h4><p>分析結果が現場の実態と食い違う箇所に気づき、数字だけでは見えないズレを指摘します。</p></div>
+        <div class="role"><h4>不確かな点を明らかにする</h4><p>データでは判断しきれない前提や曖昧さを言語化し、どこまでが確かで、どこからが不確かかを分けます。</p></div>
+        <div class="role"><h4>最終的な選択を検証する</h4><p>導かれた戦略や選択が、事業の文脈で本当に妥当かを確かめ、意思決定に太鼓判を押します。</p></div>
+      </div>
+    </div>
+
+    <div class="loopback" style="margin-top:16px">
+      <b>Win-Win の関係：</b>こうした取り組みを行う組織は、ビジネス戦略の中心にデータを位置づけつつ、社員のインサイトからも恩恵を受けます。データか人か、ではなく、<b>データ × 専門家の知恵</b>で決めるのが、データ主導の意思決定の完成形です。
+    </div>
+
+    <p class="source-note">出典：Google データアナリティクス認定プログラム教材「優れた意思決定のためにデータをどう役立てるか」（データ主導の意思決定と内容領域専門家についての講義）</p>
+  </section>
+
+  <!-- 08 -->
+  <section id="improve">
+    <div class="sec-head"><span class="no">08</span><h2>プロセスの改善（7つ目の習慣）</h2></div>
+    <p class="sec-lead">6ステップを1回やって終わりにせず、終わったあとに「次はもっと良くするには？」と見直すこと自体が、プロセスの外側にある習慣です。</p>
+
+    <div class="improve-list">
+      <div class="item"><span class="n">1</span><div><h4>振り返りと評価</h4><p>各ステップで何がうまくいったか、どこで時間や労力がかかったかを、事実だけ3行で記録する。</p></div></div>
+      <div class="item"><span class="n">2</span><div><h4>フィードバックの収集</h4><p>「どうでしたか？」ではなく「グラフのどこが分かりにくかったですか？」と具体的に聞く。</p></div></div>
+      <div class="item"><span class="n">3</span><div><h4>データの質の確認</h4><p>正確さ・完全性・一貫性・鮮度を、毎回同じ項目でチェックする（下記）。</p></div></div>
+      <div class="item"><span class="n">4</span><div><h4>ツールや技術の見直し</h4><p>手作業のコピーをSQLやテンプレートに置き換えるなど、1つだけ変えて前回と比較する。</p></div></div>
+      <div class="item"><span class="n">5</span><div><h4>継続的な学習</h4><p>新しい分析手法やベストプラクティスを学び、効いた改善はチェックリストやテンプレートとして「型」に残す。</p></div></div>
+    </div>
+
+    <h3 class="sub">データの質チェック（4項目）</h3>
+    <div class="quality">
+      <span class="q">正確さ — 値は合っているか</span>
+      <span class="q">完全性 — 欠けがないか</span>
+      <span class="q">一貫性 — 表記は統一されているか</span>
+      <span class="q">鮮度 — 古くないか</span>
+    </div>
+
+    <div class="rule">
+      <p class="r-title">改善の鉄則：1つだけ小さく試し、数字で比べる</p>
+      <p>改善前と改善後を、所要時間やミスの件数で比べます。改善自体も小さなデータ分析です。効けば、報告が速く・正確になり、会議が「数字が合っているか」ではなく「どう動くか」の議論になります。</p>
+    </div>
+  </section>
+
+  <!-- 09 -->
+  <section id="score">
+    <div class="sec-head"><span class="no">09</span><h2>あなたの到達点</h2></div>
+    <p class="sec-lead">理解度チェックと、身近な事例への当てはめです。ここでは小さなカフェを例に、6ステップを1周回してみます。</p>
+
+    <div class="score-card">
+      <div class="score-big">
+        <span class="fraction">4<small> / 5</small></span>
+        <span class="of">理解度クイズ 正解</span>
+      </div>
+      <div>
+        <div class="score-bar" role="img" aria-label="5問中4問正解、80パーセント"><i></i></div>
+        <ul>
+          <li><strong>よく理解できている：</strong>Ask で問題を具体化すること／Analyze で傾向を見つけること／Share は判断できる形で伝えること／Act で終わらず効果を測って次の Ask につなげる循環</li>
+          <li><strong>唯一の弱点：</strong>Prepare（集める）と Process（整える）の区別 — セクション02の復習ポイントとミニクイズで確認できます</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="sub">実践：6ステップ × カフェの平日午後の客数改善</h3>
+    <p>題材は、駅前の小さなカフェの悩みです。「平日の午後が静かで、席が空いている時間が多い」。感覚では分かっていても、どの曜日・どの時間帯が本当に弱いのかは、記録を並べないと見えてきません。数字は当てはめを理解するための例です。</p>
+    <div class="fund-cards">
+      <div class="fund">
+        <h4><span>SNAPSHOT — 平日 14〜17時</span>いま見えていること（例）</h4>
+        <dl>
+          <dt>午後の平均客数</dt><dd>18人 ／ 日</dd>
+          <dt>一番静かな時間</dt><dd>15時台</dd>
+          <dt>最初の気づき</dt><dd>雨の日は店内が減る</dd>
+        </dl>
+      </div>
+      <div class="fund">
+        <h4><span>GOAL — 4週間で確かめる</span>目指す変化</h4>
+        <dl>
+          <dt>目標</dt><dd>平日午後の客数 <span class="yield">+20%</span></dd>
+          <dt>守る条件</dt><dd>人件費は増やさない</dd>
+          <dt>比べ方</dt><dd>曜日 × 天気 × 時間帯</dd>
+        </dl>
+      </div>
+    </div>
+
+    <table class="data">
+      <caption>カフェの事例での当てはめ</caption>
+      <thead><tr><th scope="col">ステップ</th><th scope="col">カフェでの具体例</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">1. Ask</th><td>問いを具体化する：「平日の午後が暇だ」ではなく「どの曜日の、どの時間帯で、どんな来客が減っているか？」まで落とし込み、成功の基準を「4週間で平日午後の客数 +20%、ただし人件費は増やさない」と決める</td></tr>
+        <tr><th scope="row">2. Prepare</th><td>レジの売上・客数データ、スタッフが付けた来客メモ、その日の天気、近隣のイベント日程を集める。比べられるよう、期間は直近8週間分で揃える</td></tr>
+        <tr><th scope="row">3. Process</th><td>「14時」と「午後2時」のような時間帯の表記ゆれを統一し、取消・返品の伝票を取り除く。記録が欠けた日には印を付けて、無いものとして扱わない。<b>ここが崩れると次の比較が全部ずれます</b></td></tr>
+        <tr><th scope="row">4. Analyze</th><td>曜日 × 時間帯、天気別に客数と客単価を比べる。15時台が特に弱く、雨の日は店内の客が減る一方でテイクアウトの比率が上がる、といった傾向を見つける</td></tr>
+        <tr><th scope="row">5. Share</th><td>曜日 × 時間帯の表と、時間帯別の客数の推移グラフをスタッフと共有する。「15時台に来る理由がないのではないか」という仮説を、感覚ではなく表を見ながら全員で確認する</td></tr>
+        <tr><th scope="row">6. Act</th><td>変えるのは1つだけにする。たとえば15時台限定のドリンク＋焼き菓子セットを2週間だけ試し、客数と売上で効果を測る。結果を次の Ask に戻し「本当に15時台は動いたか？」をまた確かめる</td></tr>
+      </tbody>
+    </table>
+
+    <div class="next-box">
+      <p><span class="when">まずの2週間でやること：</span>新しい施策はまだ打たず、記録の揃え方を統一して曜日 × 時間帯の表を1枚作ることです。それが基準（ベースライン）になり、次の2週間で試した施策が効いたかどうかを、前と後で数字で比べられるようになります。</p>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section id="related">
+    <div class="sec-head"><span class="no">10</span><h2>関連ページ</h2></div>
+    <p class="sec-lead">このシートとあわせて使う、同じ講義の学習ページです。言葉の定義を確認したいときは用語集へ、全体のつながりを眺めたいときはマインドマップへどうぞ。</p>
+
+    <div class="related">
+      <a class="rel-card" href="glossary.html">
+        <span class="rel-kicker">GLOSSARY</span>
+        <h3>データ分析用語集</h3>
+        <p>コース1・モジュール1の用語と定義を、引ける形にまとめたページです。分析的思考、データ設計、データ戦略、根本原因など、このシートに登場する言葉の公式定義を確認できます。</p>
+        <span class="rel-go">用語集を開く →</span>
+      </a>
+      <a class="rel-card" href="mindmap.html">
+        <span class="rel-kicker">MIND MAP</span>
+        <h3>データ分析マインドマップ</h3>
+        <p>中心の「データ分析」から6本の枝が広がる全体図です。6ステップ、5つのスキル、思考法などの項目を選ぶと、それぞれの解説が表示されます。</p>
+        <span class="rel-go">マインドマップを開く →</span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>データ分析入門・まとめシート — 講義全体（基本プロセス／スキルアップ／分析の4類型と事例／プロセスのバリエーション／データ主導の意思決定／プロセス改善）の要約。カフェの事例とその数字は、6ステップの当てはめを理解するための例です。</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var quiz = document.getElementById('quiz');
+  if(!quiz) return;
+  var opts = quiz.querySelectorAll('button.opt');
+  var feedback = document.getElementById('quiz-feedback');
+  var retry = document.getElementById('quiz-retry');
+  function answer(btn){
+    var correct = btn.getAttribute('data-correct') === 'true';
+    opts.forEach(function(o){
+      o.disabled = true;
+      if(o.getAttribute('data-correct') === 'true'){ o.classList.add('correct'); }
+    });
+    if(!correct){ btn.classList.add('wrong'); }
+    feedback.innerHTML = correct
+      ? '<span class="verdict">正解です。</span> 重複・空欄・表記のゆれを直すのは「整える」作業、つまり <strong>Process</strong> です。Prepare はその前の「集める」段階でしたね。'
+      : '<span class="verdict">正解は B. Process でした。</span> Prepare ＝ 集める、Process ＝ 整える。収集したあとの重複削除・空欄対応・表記統一は、すべて Process です。';
+    feedback.classList.add('show');
+    retry.classList.add('show');
+  }
+  opts.forEach(function(o){ o.addEventListener('click', function(){ answer(o); }); });
+  retry.addEventListener('click', function(){
+    opts.forEach(function(o){ o.disabled = false; o.classList.remove('correct','wrong'); });
+    feedback.classList.remove('show');
+    feedback.textContent = '';
+    retry.classList.remove('show');
+  });
+})();
+</script>
+<div style="position:fixed;left:12px;bottom:12px;z-index:9999;"><a href="index.html" style="display:inline-block;padding:8px 14px;border-radius:999px;background:rgba(20,24,32,.88);color:#fff;font-size:13px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25);">← データ分析 成果物の入口へ</a></div></body>
+</html>

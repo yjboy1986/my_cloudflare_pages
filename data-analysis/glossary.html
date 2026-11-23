@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>データ分析用語集</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#ffffff;
+    --bg-soft:#eef3f1;
+    --surface:#ffffff;
+    --surface-2:#f4f7f5;
+    --ink:#17211d;
+    --ink-2:#43514b;
+    --ink-3:#6b7a73;
+    --line:#d8e0dc;
+    --line-strong:#b9c8c1;
+    --teal:#0c5a4d;
+    --teal-deep:#083f36;
+    --teal-bright:#12836e;
+    --teal-tint:#e2efeb;
+    --ochre:#b96f12;
+    --ochre-tint:#fbf0dd;
+    --ochre-ink:#7a4a08;
+    --hero-bg:#083f36;
+    --hero-ink:#f2f7f4;
+    --hero-sub:#bcd8cf;
+    --shadow:0 1px 2px rgba(8,40,33,.06),0 8px 28px rgba(8,40,33,.07);
+    --flash:#fbf0dd;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#101613;
+      --bg-soft:#161e1a;
+      --surface:#18201c;
+      --surface-2:#1d2621;
+      --ink:#eef3f0;
+      --ink-2:#c3cfc9;
+      --ink-3:#93a49b;
+      --line:#2c3832;
+      --line-strong:#3d4d45;
+      --teal:#4fc3a9;
+      --teal-deep:#0a2e28;
+      --teal-bright:#5ec8b4;
+      --teal-tint:#17332d;
+      --ochre:#e5a54b;
+      --ochre-tint:#33270f;
+      --ochre-ink:#f0c078;
+      --hero-bg:#0a2e28;
+      --hero-ink:#eef6f2;
+      --hero-sub:#a9cabe;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.28);
+      --flash:#33270f;
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *{transition:none!important;animation:none!important}
+  }
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic UI","Yu Gothic",sans-serif;
+    font-size:16px;line-height:1.85;-webkit-font-smoothing:antialiased;
+  }
+  button,[role="button"],select,summary,input:not([type="checkbox"],[type="radio"]){min-height:2.25rem}
+  a{color:var(--teal)}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 20px}
+
+  /* ---------- Hero ---------- */
+  .hero{background:var(--hero-bg);color:var(--hero-ink);padding:48px 0 40px;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;right:-70px;top:-70px;width:300px;height:300px;border-radius:50%;border:52px solid rgba(255,255,255,.05);pointer-events:none}
+  .hero::before{content:"";position:absolute;right:120px;bottom:-130px;width:190px;height:190px;border-radius:50%;border:34px solid rgba(255,255,255,.04);pointer-events:none}
+  .hero .kicker{font-family:"IBM Plex Mono",monospace;font-size:.78rem;letter-spacing:.22em;color:var(--hero-sub);margin:0 0 12px;font-weight:600}
+  .hero h1{font-family:"Shippori Mincho B1","Hiragino Mincho ProN",serif;font-size:clamp(1.9rem,5.4vw,2.9rem);line-height:1.3;font-weight:800;margin:0 0 14px}
+  .hero .lead{font-size:clamp(.98rem,2.4vw,1.1rem);color:var(--hero-sub);margin:0;max-width:680px;line-height:1.9}
+  .hero .lead strong{color:var(--hero-ink)}
+  .hero-stats{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;position:relative;z-index:1}
+  .hstat{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:10px;padding:9px 16px 11px;min-width:118px}
+  .hstat .num{font-family:"Shippori Mincho B1",serif;font-size:1.4rem;font-weight:800;line-height:1.25;display:block}
+  .hstat .num small{font-size:.82rem;font-weight:600}
+  .hstat .lbl{font-size:.74rem;color:var(--hero-sub);letter-spacing:.04em;display:block}
+
+  /* ---------- 姉妹ページへのリンク ---------- */
+  .siblings{padding:26px 0 4px}
+  .siblings h2{font-size:.82rem;letter-spacing:.14em;color:var(--ink-3);margin:0 0 12px;font-weight:900}
+  .sib-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .sib{
+    display:block;text-decoration:none;color:var(--ink);background:var(--surface);
+    border:1px solid var(--line);border-radius:14px;padding:18px 20px 16px;box-shadow:var(--shadow);
+    transition:border-color .15s ease, transform .15s ease;
+  }
+  .sib:hover{border-color:var(--teal-bright)}
+  .sib .tag{font-family:"IBM Plex Mono",monospace;font-size:.7rem;letter-spacing:.18em;color:var(--teal);font-weight:600;display:block;margin-bottom:6px}
+  .sib .name{font-family:"Shippori Mincho B1",serif;font-size:1.22rem;font-weight:800;line-height:1.4;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .sib .name .arr{color:var(--teal);font-family:"Zen Kaku Gothic New",sans-serif;font-weight:900}
+  .sib p{margin:8px 0 0;font-size:.9rem;color:var(--ink-2);line-height:1.75}
+  @media (max-width:640px){.sib-grid{grid-template-columns:1fr}}
+
+  /* ---------- 操作バー ---------- */
+  .controls{position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--line);padding:14px 0 12px;margin-top:22px}
+  .search-row{display:flex;gap:10px;align-items:stretch}
+  .search-box{flex:1;display:flex;align-items:center;gap:8px;border:1px solid var(--line-strong);border-radius:10px;padding:0 14px;background:var(--surface)}
+  .search-box svg{flex:0 0 auto;color:var(--ink-3)}
+  .search-box input{flex:1;border:0;background:transparent;color:var(--ink);font:inherit;font-size:1rem;min-height:2.75rem;outline:none;min-width:0}
+  .search-box input::placeholder{color:var(--ink-3)}
+  .clear-btn{border:1px solid var(--line);background:var(--surface-2);color:var(--ink-2);border-radius:10px;padding:0 16px;font:inherit;font-weight:700;cursor:pointer;min-height:2.75rem}
+  .clear-btn:hover{border-color:var(--teal-bright);color:var(--teal)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .chip{
+    border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-2);
+    border-radius:999px;padding:6px 14px;font:inherit;font-size:.86rem;font-weight:700;cursor:pointer;
+    display:inline-flex;align-items:center;gap:7px;min-height:2.4rem;
+  }
+  .chip .dot{width:9px;height:9px;border-radius:50%;background:var(--c,#999);flex:0 0 auto}
+  .chip[aria-pressed="true"]{background:var(--teal-deep);border-color:var(--teal-deep);color:#eef6f2}
+  @media (prefers-color-scheme: dark){.chip[aria-pressed="true"]{background:var(--teal-tint);border-color:var(--teal);color:var(--ink)}}
+  .count{font-size:.84rem;color:var(--ink-3);margin:10px 2px 0}
+  .count strong{color:var(--ink)}
+
+  /* ---------- 用語リスト ---------- */
+  main{padding:8px 0 30px}
+  .cat-head{display:flex;align-items:baseline;gap:12px;margin:34px 0 4px}
+  .cat-head .cdot{width:12px;height:12px;border-radius:3px;background:var(--c);align-self:center;flex:0 0 auto}
+  .cat-head h2{font-family:"Shippori Mincho B1",serif;font-size:1.35rem;font-weight:800;margin:0}
+  .cat-head .cen{font-family:"IBM Plex Mono",monospace;font-size:.74rem;letter-spacing:.14em;color:var(--ink-3)}
+  .cat-head .ccount{margin-left:auto;font-size:.8rem;color:var(--ink-3)}
+  .cat-desc{margin:0 0 14px;color:var(--ink-2);font-size:.92rem}
+  .term-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:720px){.term-grid{grid-template-columns:1fr}}
+  .term{
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;
+    padding:16px 18px 14px;box-shadow:var(--shadow);scroll-margin-top:190px;
+    display:flex;flex-direction:column;
+  }
+  .term.flash{animation:flash 1.6s ease}
+  @keyframes flash{0%,60%{background:var(--flash);border-color:var(--ochre)}100%{background:var(--surface)}}
+  .term-top{display:flex;align-items:flex-start;gap:10px}
+  .term h3{font-size:1.13rem;font-weight:900;line-height:1.5;margin:0;flex:1}
+  .badge{flex:0 0 auto;font-size:.68rem;font-weight:900;letter-spacing:.06em;border-radius:6px;padding:2px 8px;margin-top:4px}
+  .badge.official{background:var(--teal-tint);color:var(--teal)}
+  .badge.related{background:var(--ochre-tint);color:var(--ochre-ink)}
+  .term .en{font-family:"IBM Plex Mono",monospace;font-size:.8rem;color:var(--ink-3);margin:2px 0 0;letter-spacing:.02em}
+  .term .def{margin:10px 0 0;font-size:.94rem;line-height:1.85;color:var(--ink)}
+  .term .point{display:none;margin:12px 0 0;background:var(--surface-2);border-radius:8px;padding:10px 13px;font-size:.88rem;line-height:1.8;color:var(--ink-2)}
+  .term .point b{color:var(--ink);display:block;font-size:.76rem;letter-spacing:.1em;margin-bottom:2px}
+  .term.open .point{display:block}
+  .term-foot{margin-top:auto;padding-top:12px}
+  .rel{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+  .rel span{font-size:.74rem;color:var(--ink-3);align-self:center;margin-right:2px}
+  .rel button{
+    border:1px solid var(--line);background:var(--bg);color:var(--teal);border-radius:999px;
+    padding:3px 11px;font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;min-height:2rem;
+  }
+  .rel button:hover{border-color:var(--teal-bright);background:var(--teal-tint)}
+  .term-links{display:flex;flex-wrap:wrap;gap:8px 16px;border-top:1px solid var(--line);padding-top:10px}
+  .term-links a{font-size:.82rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;min-height:2rem}
+  .term-links a:hover{text-decoration:underline}
+  .term-links .branch{font-size:.82rem;color:var(--ink-3)}
+  .more-btn{
+    align-self:flex-start;border:0;background:none;color:var(--teal);font:inherit;font-size:.84rem;font-weight:900;
+    cursor:pointer;padding:6px 2px;margin-top:8px;min-height:2.25rem;
+  }
+  .more-btn:hover{text-decoration:underline}
+  .empty{display:none;text-align:center;padding:52px 20px;color:var(--ink-2)}
+  .empty.show{display:block}
+  .empty .big{font-family:"Shippori Mincho B1",serif;font-size:1.25rem;font-weight:800;color:var(--ink);margin:0 0 8px}
+  .empty p{margin:0;font-size:.92rem}
+
+  /* ---------- フッター ---------- */
+  footer{border-top:1px solid var(--line);background:var(--bg-soft);padding:30px 0 44px;margin-top:20px}
+  footer h2{font-family:"Shippori Mincho B1",serif;font-size:1.15rem;margin:0 0 10px}
+  footer p{font-size:.9rem;color:var(--ink-2);margin:0 0 8px;line-height:1.85}
+  footer .foot-links{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 6px}
+  footer .foot-links a{
+    border:1px solid var(--line-strong);border-radius:10px;padding:10px 16px;background:var(--surface);
+    text-decoration:none;font-weight:700;font-size:.9rem;display:inline-flex;align-items:center;min-height:2.75rem;
+  }
+  footer .foot-links a:hover{border-color:var(--teal-bright)}
+  footer .note{font-size:.8rem;color:var(--ink-3)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker">GLOSSARY — DATA ANALYTICS</p>
+    <h1>データ分析用語集</h1>
+    <p class="lead">コース1・モジュール1の<strong>公式用語18語</strong>を、自動翻訳の誤り（「変圧器」→変換、「元素」→要素）を直した定義で収録。さらに、これまでの学習で登場した<strong>関連用語26語</strong>を加え、全44語を7つのカテゴリに整理した。気になる言葉は検索とカテゴリで絞り込める。</p>
+    <div class="hero-stats">
+      <div class="hstat"><span class="num">44<small>語</small></span><span class="lbl">収録用語（全カテゴリ）</span></div>
+      <div class="hstat"><span class="num">18<small>語</small></span><span class="lbl">コース公式用語（モジュール1）</span></div>
+      <div class="hstat"><span class="num">7</span><span class="lbl">カテゴリ</span></div>
+    </div>
+  </div>
+</header>
+
+<section class="siblings" aria-label="関連ページ">
+  <div class="wrap">
+    <h2>あわせて使う2つのページ</h2>
+    <div class="sib-grid">
+      <a class="sib" href="summary.html">
+        <span class="tag">SUMMARY SHEET</span>
+        <span class="name">データ分析入門・まとめシート <span class="arr">→</span></span>
+        <p>6ステップ、5つのスキル、分析の4類型、データ主導の意思決定と失敗例まで、講義全体を9セクションに要約したシート。用語の「使われ方」はこちらで確認できる。</p>
+      </a>
+      <a class="sib" href="mindmap.html">
+        <span class="tag">MIND MAP</span>
+        <span class="name">データ分析マインドマップ <span class="arr">→</span></span>
+        <p>中心の「データ分析」から6本の枝（プロセス／スキル／データ戦略／思考法／コミュニケーション／情報整理）が広がる全体図。用語同士のつながりはないか、枝からたどれる。</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="controls">
+  <div class="wrap">
+    <div class="search-row">
+      <label class="search-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg>
+        <input id="q" type="search" placeholder="用語・英語・キーワードで検索（例：四分位、strategy、なぜ）" aria-label="用語を検索" />
+      </label>
+      <button class="clear-btn" id="clearBtn" type="button">クリア</button>
+    </div>
+    <div class="chips" id="catChips" role="group" aria-label="カテゴリで絞り込む"></div>
+    <p class="count" id="count" role="status"></p>
+  </div>
+</div>
+
+<main class="wrap" id="listWrap">
+  <div id="list"></div>
+  <div class="empty" id="empty">
+    <p class="big">該当する用語がありません</p>
+    <p>検索キーワードを短くするか、カテゴリを「すべて」に戻してみてください。</p>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <h2>この用語集について</h2>
+    <p>「公式」バッジの18語は、Googleデータアナリティクス講座コース1・モジュール1の用語集に基づく。元の自動翻訳にあった誤り（データの「変圧器」→変換、エコシステムの「元素」→要素など）は、意味の通る訳に直してある。「関連」バッジの26語は、モジュール1以降の学習（6ステップ、5回のなぜ、四分位数、明確化・具体化など）で登場した言葉を、学習内容に沿って定義したもの。</p>
+    <p>似た言葉の区別がこの用語集の要点になる。たとえば「データ設計」は公式定義では「情報の整理方法」と一文で言い切られ、その実行の中身が「データの整理／情報の構造化」だ。「技術的思考」と「構造的思考」も、定義の違いを比べて読むと使い分けが見えてくる。</p>
+    <div class="foot-links">
+      <a href="summary.html">まとめシートで全体を復習する →</a>
+      <a href="mindmap.html">マインドマップでつながりを見る →</a>
+    </div>
+    <p class="note">出典：コース1・モジュール1用語集（ユーザー提供、2026-11-24）およびこれまでの学習セッションの内容。</p>
+  </div>
+</footer>
+
+<script>
+"use strict";
+var SUMMARY = "summary.html";
+var MINDMAP = "mindmap.html";
+
+var CATS = [
+  { id:"basic",    label:"基本の言葉",       en:"BASICS",        color:"#0c5a4d", desc:"データと分析そのものを指す、土台の言葉。" },
+  { id:"process",  label:"プロセス：6ステップ", en:"PROCESS",    color:"#33658a", desc:"分析の進め方を段階に分けた標準手順。各ステップがそのまま用語になっている。" },
+  { id:"skills",   label:"スキルと思考法",   en:"SKILLS",        color:"#b96f12", desc:"アナリストに求められる5つのスキルと、その土台になる考え方。" },
+  { id:"decision", label:"意思決定と仕組み", en:"DECISIONS",     color:"#b4552d", desc:"データを判断につなげる仕組みと、判断を誤らせる落とし穴。" },
+  { id:"methods",  label:"手法と統計",       en:"METHODS",       color:"#5b4b8a", desc:"原因を掘る手法と、分布を読むための統計の言葉。" },
+  { id:"comm",     label:"コミュニケーション", en:"COMMUNICATION", color:"#2f6f6a", desc:"言葉の意味をそろえ、曖昧さを測れる形に変える技法。" },
+  { id:"org",      label:"情報整理と管理",   en:"ORGANIZATION",  color:"#5f7a33", desc:"データを効果的に使える状態に保つための整理・構造化・管理の言葉。" }
+];
+var CATMAP = {};
+CATS.forEach(function(c){ CATMAP[c.id]=c; });
+
+/* sheet: まとめシートのセクションid / branch: マインドマップの枝の名前 */
+var TERMS = [
+  /* ===== 基本の言葉 ===== */
+  { id:"data", jp:"データ", en:"Data", cat:"basic", official:true, sheet:"what", branch:null,
+    def:"事実の集まり。売上記録、アンケートの回答、センサーの測定値など、集めて数えられる形になった事実そのものを指す。",
+    point:"データは「集めただけ」では情報にならない。整理し、文脈と結びつけて初めて意味を持つ。分析のすべての工程は、この事実の集まりをどう扱うかに帰着する。",
+    rel:["dataset","data-analysis","context"] },
+  { id:"dataset", jp:"データセット", en:"Dataset", cat:"basic", official:true, sheet:"what", branch:null,
+    def:"1つの単位として操作または分析できるデータの集まり。表形式なら、行と列がそろった1枚の表が典型。",
+    point:"「データ」が素材そのものなら、「データセット」は分析に使える単位にまとまった状態を指す言葉。どの範囲を1セットとするかで、分析の単位が決まる。",
+    rel:["data","data-analysis"] },
+  { id:"data-analysis", jp:"データ分析", en:"Data Analysis", cat:"basic", official:true, sheet:"what", branch:"6ステップのプロセス",
+    def:"結論を導き出し、予測を立て、情報に基づいた意思決定を行うための、データの収集・変換・整理。（公式定義の「変圧器」は自動翻訳の誤りで、正しくは「変換」）",
+    point:"集める・整えるだけで終わらず、「結論・予測・意思決定」まで届くことが定義に含まれているのが要点。6ステップのプロセスは、この定義を手順に展開したもの。",
+    rel:["data-analyst","data-analytics","six-steps"] },
+  { id:"data-analyst", jp:"データアナリスト", en:"Data Analyst", cat:"basic", official:true, sheet:"what", branch:null,
+    def:"データを収集、変換、整理し、結論を導き出し、予測し、十分な情報に基づいた意思決定を行う人。",
+    point:"定義の動詞の並び（収集→変換→整理→結論→予測→意思決定）が、そのまま仕事の流れになっている。道具の操作だけでなく、問いを立て判断につなげる役割まで含む。",
+    rel:["data-analysis","analytical-skills"] },
+  { id:"data-analytics", jp:"データアナリティクス", en:"Data Analytics", cat:"basic", official:true, sheet:"what", branch:null,
+    def:"データのサイエンス。データを分析して意思決定に活かす営み全体を指す分野の名前。",
+    point:"「データ分析（Data Analysis）」が個々の分析作業を指すのに対し、「データアナリティクス」は分野・領域全体を指す言い方として使い分けられることが多い。",
+    rel:["data-analysis","data-science"] },
+  { id:"data-science", jp:"データサイエンス", en:"Data Science", cat:"basic", official:true, sheet:"what", branch:null,
+    def:"未知のものをモデリングし理解する新しい方法を創造するために、生のデータを使用する研究フィールド。",
+    point:"データ分析が既存の手法で問いに応える営みに近いのに対し、データサイエンスは「新しい方法そのものを生み出す」研究の側面が強調される。",
+    rel:["data-analytics","data-analysis"] },
+  { id:"context", jp:"コンテキスト", en:"Context", cat:"basic", official:true, sheet:"tools", branch:"5つの分析スキル",
+    def:"何かが存在する、または起こる状態。データが生まれた背景・状況のこと。（公式定義の「状態」は「状況」の誤訳寄りの表現）",
+    point:"同じ数字でも文脈が違えば意味が変わる。たとえば売上減が「市場全体の縮小」なのか「自社だけの問題」なのかで、打つ手は正反対になる。5つのスキルの「コンテキスト理解」はこの言葉の応用。",
+    rel:["context-understanding","data-driven"] },
+
+  /* ===== プロセス：6ステップ ===== */
+  { id:"six-steps", jp:"分析の6ステップ", en:"The 6-Step Process", cat:"process", official:false, sheet:"process", branch:"6ステップのプロセス",
+    def:"分析の進め方を Ask（尋ねる）→ Prepare（準備する）→ Process（処理する）→ Analyze（分析する）→ Share（共有する）→ Act（行動する）の6段階に分けた標準手順。",
+    point:"構造的思考を手順として形にしたもの。前の段階の曖昧さは後の全部に響くため、特に最初の Ask の質が全体を決める。Act の結果は次の Ask に戻り、循環する。",
+    rel:["ask","prepare","process-step","analyze","share","act","structured-thinking"] },
+  { id:"ask", jp:"Ask（尋ねる）", en:"Ask", cat:"process", official:false, sheet:"process", branch:"6ステップのプロセス",
+    def:"解くべき問題を定義する段階。何を決めたいのか、成功を何で測るのか、関係者は誰かを明らかにし、言葉の定義をそろえる。",
+    point:"6ステップの中で最も重要と言われる。ここでの小さな確認（明確化・具体化）が、収集と分析の全部をやり直す事態を防ぐ。データ駆動型意思決定の成否も、実はこの段階でほぼ決まる。",
+    rel:["six-steps","clarification","specification"] },
+  { id:"prepare", jp:"Prepare（準備する）", en:"Prepare", cat:"process", official:false, sheet:"process", branch:"6ステップのプロセス",
+    def:"必要なデータを集め、使える形に整える準備の段階。どのデータを正本とするか、定義や出所をどう残すかを決める。",
+    point:"データ設計と情報整理のスキルが最も効く段階。集める前に「何のために、どの粒度で」集めるかを決めることが、後の手戻りを防ぐ。",
+    rel:["six-steps","data-design","data-organization"] },
+  { id:"process-step", jp:"Process（処理する）", en:"Process", cat:"process", official:false, sheet:"process", branch:"6ステップのプロセス",
+    def:"集めたデータを分析できる状態にする段階。重複・空白・表記ゆれを取り除き、形式をそろえる。",
+    point:"空白が「未回答」なのか「入力ミス」なのかで扱いが変わるため、理由を確認してから処理する。元データは上書きせず、加工用を分けるのが原則。",
+    rel:["six-steps","gigo","metadata"] },
+  { id:"analyze", jp:"Analyze（分析する）", en:"Analyze", cat:"process", official:false, sheet:"process", branch:"6ステップのプロセス",
+    def:"整えたデータからパターンや関係を見つけ、問いへの答えを導く段階。",
+    point:"分析的思考が中心になる段階。可視化して全体と細部を行き来し、四分位数のような分布の見方で平均の裏側まで読む。",
+    rel:["six-steps","analytical-thinking","quartiles","four-types"] },
+  { id:"share", jp:"Share（共有する）", en:"Share", cat:"process", official:false, sheet:"process", branch:"6ステップのプロセス",
+    def:"分析結果を、相手に伝わる形で共有する段階。図や表による可視化が中心的な手段になる。",
+    point:"「出した」だけでなく「解釈が正しく伝わったか」の確認まで含む。報告に使ったデータと手順は、再現できるようにセットで保管する。",
+    rel:["six-steps","data-viz"] },
+  { id:"act", jp:"Act（行動する）", en:"Act", cat:"process", official:false, sheet:"process", branch:"6ステップのプロセス",
+    def:"分析結果を実際の行動と意思決定につなげる段階。ここに届いて初めて、分析は価値を生む。",
+    point:"実行後は結果を数字で測り直し、次の Ask に戻す。決めて終わりにしないことが、データ主導の意思決定との接点になる。",
+    rel:["six-steps","data-driven"] },
+
+  /* ===== スキルと思考法 ===== */
+  { id:"analytical-skills", jp:"分析能力", en:"Analytical Skills", cat:"skills", official:true, sheet:"tools", branch:"5つの分析スキル",
+    def:"問題を解決するために事実を使用することに関連する資質および特性。",
+    point:"個別の技術ではなく「事実を使って問題を解く」という姿勢全体を指す総称。その具体的な中身が、分析的思考や5つのスキルとして分解される。",
+    rel:["analytical-thinking","data-analyst"] },
+  { id:"analytical-thinking", jp:"分析的思考", en:"Analytical Thinking", cat:"skills", official:true, sheet:"tools", branch:"思考法",
+    def:"問題を識別し、定義し、データを組織化された段階的な方法で使用して解決するプロセス。",
+    point:"定義にある「組織化された段階的な方法」が、構造的思考や6ステップとつながる核。これが欠けると、データを持っていても意味を取り違え、誤った結論に至るリスクが高まる。",
+    rel:["structured-thinking","analytical-skills","six-steps"] },
+  { id:"structured-thinking", jp:"構造的思考", en:"Structured Thinking", cat:"skills", official:false, sheet:"tools", branch:"思考法",
+    def:"問題を段階に分け、各段階を整理して順序立て、全体として抜けなく解決へ進める能力。問題全体の枠組みを構造として捉える考え方。",
+    point:"技術的マインドセットと重なる部分が大きい。区別するなら、構造的思考は「問題全体を段階と構造に整理する考え方」、技術的マインドセットは5つのスキルの中で「分解して実行に落とす力」を指す言い方。",
+    rel:["analytical-thinking","technical-mindset","six-steps"] },
+  { id:"technical-mindset", jp:"技術的思考（技術的マインドセット）", en:"Technical Mindset", cat:"skills", official:true, sheet:"tools", branch:"5つの分析スキル",
+    def:"物事を小さなステップや断片に分解し、整然と論理的に作業する能力。5つの分析スキルの1つ。（公式用語集の見出しは「技術的思考」）",
+    point:"意思決定の場面では、「売上を上げたい」という大きな決定を、対象顧客・指標・期間・施策候補へ分解し、各ステップを数字で検証可能な形に変える力として働く。",
+    rel:["structured-thinking","analytical-thinking"] },
+  { id:"curiosity", jp:"好奇心", en:"Curiosity", cat:"skills", official:false, sheet:"tools", branch:"5つの分析スキル",
+    def:"データから新しい発見をしたいという意欲。疑問を持ち、問いを生み出す力。5つの分析スキルの1つ。",
+    point:"問いの発生源になる一方、生まれた問いが多すぎると資源が分散する。データ戦略による優先順位づけと対になって機能する。",
+    rel:["ask","data-strategy"] },
+  { id:"context-understanding", jp:"コンテキスト理解", en:"Understanding Context", cat:"skills", official:false, sheet:"tools", branch:"5つの分析スキル",
+    def:"データが示す背景や状況を正しく把握する能力。5つの分析スキルの1つ。",
+    point:"数字の背後にある事情（市場の変化、関係者の立場、制約条件）を読む力。データだけを見て文脈を無視する判断は、データ主導の意思決定の典型的な失敗形になる。",
+    rel:["context","data-driven"] },
+  { id:"data-design", jp:"データ設計（データデザイン）", en:"Data Design", cat:"skills", official:true, sheet:"tools", branch:"5つの分析スキル",
+    def:"情報の整理方法。情報が効果的に使えるように、その組織の仕方や配置の決め方に注目するスキル。5つの分析スキルの1つ。",
+    point:"公式定義は「情報の整理方法」と一文で言い切る。実際に手を動かす中身は、分類・構造化・形式の統一といった「データの整理／情報の構造化」。設計の目的は、使いたいときに迷わず正しい意味で取り出せる状態にすること。",
+    rel:["data-organization","data-structuring","data-strategy"] },
+  { id:"data-strategy", jp:"データ戦略", en:"Data Strategy", cat:"skills", official:true, sheet:"tools", branch:"データ戦略",
+    def:"データ分析に使用する人材（人）、プロセス、ツールを管理すること。目標達成のために3つを組み合わせる計画。5つの分析スキルの1つ。",
+    point:"5つのスキルの中で唯一「個々の分析」ではなく「意思決定の仕組み全体」を見るスキルで、最も難しいとされる。戦略があると判断に一貫性と再現性が生まれ、ないと部門ごとに違う数字で違う決定をする失敗につながる。",
+    rel:["data-design","data-driven","curiosity"] },
+
+  /* ===== 意思決定と仕組み ===== */
+  { id:"data-driven", jp:"データ主導の意思決定", en:"Data-Driven Decision-Making", cat:"decision", official:true, sheet:"data-driven", branch:null,
+    def:"ビジネス戦略を導くための事実の活用。勘や経験だけに頼らず、集めたデータを根拠にして決める方法。「データ駆動型意思決定」とも呼ばれる。",
+    point:"失敗する形は主に4つ：データ自体が悪い（古い・偏っている・不完全）、追う指標が間違っている、相関を因果と取り違える、データだけで決めて文脈を無視する。うまく働く条件は「データ＋正しい問い＋人間の判断」の組み合わせ。",
+    rel:["data-strategy","act","correlation","sme"] },
+  { id:"data-ecosystem", jp:"データエコシステム", en:"Data Ecosystem", cat:"decision", official:true, sheet:"what", branch:null,
+    def:"データを生成、管理、保存、整理、分析、共有するために相互に作用し合う様々な要素。（公式定義の「元素」は「要素」の誤訳）",
+    point:"データベース、表計算ソフト、共有の仕組み、人やルールまでを含む全体像を指す。1つの道具ではなく「相互に作用し合う」点が定義の核。",
+    rel:["data-strategy","dataset"] },
+  { id:"gap-analysis", jp:"ギャップ分析", en:"Gap Analysis", cat:"decision", official:true, sheet:"improve", branch:null,
+    def:"将来的な改善の機会を特定するために、プロセスの現状を調査・評価するメソッド。現状と目標の差（ギャップ）を見て、埋めるべき課題を決める。",
+    point:"「今どこにいて、どこへ行きたいか」の差を先に測ることで、改善施策の優先順位がつけられる。プロセス改善の出発点になる手法。",
+    rel:["root-cause","five-whys"] },
+  { id:"sme", jp:"内容領域専門家（SME）", en:"Subject Matter Expert", cat:"decision", official:false, sheet:"data-driven", branch:null,
+    def:"対象分野の業務や現場を深く知る専門家。データの数字だけでは見えない文脈や、数字の解釈の妥当性を補う存在。",
+    point:"過去のパターンが通用しない変化の前では、データは後ろ向きの情報でしかない。SMEの経験や現場の観察と組み合わせて初めて、データは意思決定の力になる。",
+    rel:["data-driven","context-understanding"] },
+  { id:"correlation", jp:"相関と因果", en:"Correlation vs. Causation", cat:"decision", official:false, sheet:"types", branch:"思考法",
+    def:"相関は「2つのものが一緒に動く」関係、因果は「一方がもう一方の原因である」関係。相関があるだけでは因果は証明できない。",
+    point:"取り違えは意思決定の代表的な失敗。因果だと思って効かない施策に予算や時間を大きく割く前に、「なぜ起きたか」を掘る診断的分析や、A/Bテストによる検証を挟む。",
+    rel:["data-driven","ab-test","four-types"] },
+
+  /* ===== 手法と統計 ===== */
+  { id:"root-cause", jp:"根本原因", en:"Root Cause", cat:"methods", official:true, sheet:"improve", branch:"思考法",
+    def:"問題が発生する理由。表面的な症状ではなく、その奥にある原因そのもの。",
+    point:"症状への対処（例：キャンペーンを打つ）と、根本原因への対処（例：検知の仕組みを作る）では、再発するかどうかが変わる。5回のなぜは、ここへ届くための手法。",
+    rel:["five-whys","gap-analysis"] },
+  { id:"five-whys", jp:"5回のなぜ", en:"5 Whys", cat:"methods", official:false, sheet:"types", branch:"思考法",
+    def:"問題に対して「なぜ？」を繰り返し問い、表面的な症状ではなく根本原因を特定する手法。トヨタの現場から広まった根本原因分析で、診断的分析の道具にあたる。",
+    point:"例：リピート率低下→フォローメール未達→配信リスト登録の失敗→データ連携の欠落→エラー検知の仕組みがない。注意点は2つ：各答えは思いつきでなく事実とデータで裏づけること、「5回」は目安で、原因が複数なら木のように分岐させること。",
+    rel:["root-cause","clarification","four-types"] },
+  { id:"four-types", jp:"分析の4類型", en:"Four Types of Analytics", cat:"methods", official:false, sheet:"types", branch:null,
+    def:"分析を目的で分けた4分類。記述的（何が起きたか）、診断的（なぜ起きたか）、予測的（何が起きそうか）、処方的（どうすべきか）。",
+    point:"問いの深さと難しさがこの順に上がる。5回のなぜは診断的分析の道具、四分位数によるグループ比較は記述から診断へ進む入口になる。",
+    rel:["five-whys","quartiles","analyze"] },
+  { id:"quartiles", jp:"四分位数", en:"Quartiles", cat:"methods", official:false, sheet:"types", branch:null,
+    def:"データを小さい順に並べ、同じ数ずつ4つのグループに分ける境目の値。第1四分位数（Q1：下から25%）、第2四分位数（Q2：中央値）、第3四分位数（Q3：下から75%）の3つがある。",
+    point:"平均だけでは見えない分布が読める。Googleの事例では、マネージャー評価を四分位で分け、上位25%のマネージャーの行動特徴を抽出して研修と評価基準に反映した。上位と下位の違いはまず相関であり、施策化したら測り直すこと。",
+    rel:["median","iqr","boxplot","outlier"] },
+  { id:"median", jp:"中央値", en:"Median", cat:"methods", official:false, sheet:"types", branch:null,
+    def:"データを小さい順に並べたとき真ん中に来る値。第2四分位数（Q2）と一致する。",
+    point:"平均と違い、外れ値に引っ張られにくい。配送時間の例では、平均や中央値が2日でも「4件に1件は5日以上」という実態は Q3 を見ないと分からない。",
+    rel:["quartiles","outlier"] },
+  { id:"iqr", jp:"四分位範囲（IQR）", en:"Interquartile Range", cat:"methods", official:false, sheet:"types", branch:null,
+    def:"Q3 − Q1 で求める、真ん中50%のデータが散らばる幅。ばらつきの指標。",
+    point:"IQRが小さい＝データが中央近くに集まり安定している、大きい＝ばらつきが大きい。グループや時期ごとに比べると「平均は同じでも安定性が違う」といった差まで分析できる。箱ひげ図の箱の長さがこれにあたる。",
+    rel:["quartiles","boxplot","outlier"] },
+  { id:"boxplot", jp:"箱ひげ図", en:"Box Plot", cat:"methods", official:false, sheet:"types", branch:null,
+    def:"四分位数を図にしたもの。箱が Q1〜Q3、箱の中の線が中央値、ひげと点が全体の範囲と外れ値を示す。",
+    point:"分布の中心・ばらつき・外れ値を1枚で読める。複数のグループを並べれば、分布同士の比較が一目でできる。",
+    rel:["quartiles","iqr","data-viz"] },
+  { id:"outlier", jp:"外れ値", en:"Outlier", cat:"methods", official:false, sheet:"types", branch:null,
+    def:"他のデータから極端に離れた値。目安として、Q1 − 1.5×IQR より小さい値、Q3 + 1.5×IQR より大きい値を候補とする。",
+    point:"外れ値は「捨てるもの」と決めつけず、入力ミスなのか、注目すべき異常のサインなのかを先に確かめる。平均が実態からずれる主因にもなる。",
+    rel:["iqr","median","process-step"] },
+  { id:"ab-test", jp:"A/Bテスト", en:"A/B Testing", cat:"methods", official:false, sheet:"data-driven", branch:null,
+    def:"2つの案を実際の利用者に分けて提示し、結果の数字を比べて優れた方を選ぶ検証方法。",
+    point:"相関ではなく「変えたから変わったか」を確かめられるため、因果に近づく検証手段になる。施策を小さく試してから全体に広げる進め方の土台。",
+    rel:["correlation","data-driven"] },
+  { id:"data-viz", jp:"データビジュアライゼーション", en:"Data Visualization", cat:"methods", official:true, sheet:"usage", branch:null,
+    def:"データをグラフィカルに表現すること。グラフや図によって、数字の羅列からは見えないパターンや分布を読み取れる形にする。（用語集の「ビジュアライゼーション」はこの項目への参照）",
+    point:"Share（共有）の中心手段であると同時に、Analyze の段階でも「分布を見る」道具になる。箱ひげ図はその代表例。",
+    rel:["share","boxplot","analyze"] },
+  { id:"viz-alias", jp:"ビジュアライゼーション", en:"Visualization", cat:"methods", official:true, sheet:"usage", branch:null,
+    def:"「データビジュアライゼーション」の短い呼び方。コースの用語集では、独立した定義を持たず「データビジュアライゼーションを参照」という参照項目として立てられている。",
+    point:"用語集にこうした参照項目があるのは、同じ概念に複数の呼び方があるため。定義をそろえる作業の小さな実例でもある。",
+    rel:["data-viz"] },
+
+  /* ===== コミュニケーション ===== */
+  { id:"clarification", jp:"明確化", en:"Clarification", cat:"comm", official:false, sheet:"process", branch:"コミュニケーション",
+    def:"コミュニケーションの中で、相手の言葉の意味を明確にするための技法。曖昧な言葉を思い込みで解釈せず、意味を確認してそろえる。",
+    point:"同僚の「毎日何時間も play している」がスポーツなのか楽器なのかで、会話の続きはまるで変わる。ずれに気づかず進むことが誤解の正体であり、明確化はそれを早い段階でほどく作業。",
+    rel:["specification","ask"] },
+  { id:"specification", jp:"具体化", en:"Specification", cat:"comm", official:false, sheet:"process", branch:"コミュニケーション",
+    def:"「具体的に何をしているのか」を尋ね、曖昧な言葉を共有できて測れる情報に変える技法。",
+    point:"「売上が悪い」を「どの商品が、いつから、何％下がったのか」に落として初めて、対象・期間・指標が決まり分析できる。概念を操作可能な定義に変える作業であり、本当の問題を掘り当てる入口にもなる。",
+    rel:["clarification","ask","five-whys"] },
+
+  /* ===== 情報整理と管理 ===== */
+  { id:"data-organization", jp:"データの整理", en:"Data Organization", cat:"org", official:false, sheet:"process", branch:"情報整理と管理",
+    def:"データを種類やテーマごとに分類し、形式をそろえ、どこに何があるか分かる状態に整えること。データ設計が実際に手を動かす中心の作業。",
+    point:"整理がうまくいかないと、必要なデータが見つからない、どれが最新か分からない、部署ごとに数字が食い違う、といった問題が分析の入口で起きる。",
+    rel:["data-design","data-structuring","metadata"] },
+  { id:"data-structuring", jp:"データ構造化（情報の構造化）", en:"Data Structuring / Information Structuring", cat:"org", official:false, sheet:"process", branch:"情報整理と管理",
+    def:"情報の組織化に特化したスキル。表の行と列、項目同士の関係、階層（全体→分類→明細）を決め、バラバラな情報をつなげられる形にすること。「情報整理（Information Organization）」とも表現される。",
+    point:"データデザインが収集方法や見せ方まで含む広い言葉なのに対し、こちらは「情報の組織化そのもの」を指す。顧客・注文・商品を別々の表に分けてIDでつなげる設計は、その典型例。",
+    rel:["data-design","data-organization"] },
+  { id:"metadata", jp:"メタデータ", en:"Metadata", cat:"org", official:false, sheet:"process", branch:"情報整理と管理",
+    def:"データについてのデータ。各項目の定義、出所、更新日、単位など、データの意味を説明する付帯情報。",
+    point:"メタデータがあると、作った人以外でも、後日でも、同じ意味でデータを読める。逆に欠けると「意味や出所が分からず、作った人がいなくなると使えない」状態になる。",
+    rel:["data-organization","prepare","process-step"] },
+  { id:"gigo", jp:"Garbage in, garbage out", en:"Garbage In, Garbage Out", cat:"org", official:false, sheet:"data-driven", branch:"情報整理と管理",
+    def:"「ゴミを入れれば、ゴミが出る」。入力データが偏っていたり誤っていたりすれば、分析がどれだけ正しくても結論は歪むという原則。",
+    point:"データ主導の意思決定が失敗する第1のパターンの土台。偏った相手にだけ聞いたアンケートや、空白・誤りの多い記録からは、正しい判断は生まれない。",
+    rel:["data-driven","process-step","data-organization"] }
+];
+
+var BYID = {};
+TERMS.forEach(function(t){ BYID[t.id]=t; });
+
+var state = { q:"", cat:"all" };
+
+var chipsEl = document.getElementById("catChips");
+var listEl = document.getElementById("list");
+var emptyEl = document.getElementById("empty");
+var countEl = document.getElementById("count");
+var qEl = document.getElementById("q");
+
+function chipBtn(value, label, color, pressed){
+  var b = document.createElement("button");
+  b.type = "button"; b.className = "chip"; b.dataset.value = value;
+  b.setAttribute("aria-pressed", pressed ? "true" : "false");
+  if (color){ var d = document.createElement("span"); d.className = "dot"; d.style.setProperty("--c", color); d.style.background = color; b.appendChild(d); }
+  b.appendChild(document.createTextNode(label));
+  b.addEventListener("click", function(){ state.cat = value; renderChips(); render(); });
+  return b;
+}
+function renderChips(){
+  chipsEl.innerHTML = "";
+  chipsEl.appendChild(chipBtn("all", "すべて（" + TERMS.length + "語）", null, state.cat==="all"));
+  chipsEl.appendChild(chipBtn("official", "コース公式のみ", null, state.cat==="official"));
+  CATS.forEach(function(c){
+    var n = TERMS.filter(function(t){ return t.cat===c.id; }).length;
+    chipsEl.appendChild(chipBtn(c.id, c.label + "（" + n + "）", c.color, state.cat===c.id));
+  });
+}
+
+function matches(t){
+  if (state.cat === "official" && !t.official) return false;
+  if (state.cat !== "all" && state.cat !== "official" && t.cat !== state.cat) return false;
+  if (!state.q) return true;
+  var hay = (t.jp + " " + t.en + " " + t.def + " " + t.point).toLowerCase();
+  return hay.indexOf(state.q.toLowerCase()) !== -1;
+}
+
+function termCard(t){
+  var card = document.createElement("article");
+  card.className = "term"; card.id = "term-" + t.id;
+
+  var top = document.createElement("div"); top.className = "term-top";
+  var h = document.createElement("h3"); h.textContent = t.jp; top.appendChild(h);
+  var badge = document.createElement("span");
+  badge.className = "badge " + (t.official ? "official" : "related");
+  badge.textContent = t.official ? "公式" : "関連";
+  top.appendChild(badge);
+  card.appendChild(top);
+
+  var en = document.createElement("p"); en.className = "en"; en.textContent = t.en; card.appendChild(en);
+  var def = document.createElement("p"); def.className = "def"; def.textContent = t.def; card.appendChild(def);
+
+  var more = document.createElement("button");
+  more.type = "button"; more.className = "more-btn"; more.textContent = "ポイント・例を見る ＋";
+  more.setAttribute("aria-expanded", "false");
+  more.addEventListener("click", function(){
+    var open = card.classList.toggle("open");
+    more.setAttribute("aria-expanded", open ? "true" : "false");
+    more.textContent = open ? "ポイント・例を閉じる −" : "ポイント・例を見る ＋";
+  });
+  card.appendChild(more);
+
+  var pt = document.createElement("div"); pt.className = "point";
+  var b = document.createElement("b"); b.textContent = "ポイント・例"; pt.appendChild(b);
+  pt.appendChild(document.createTextNode(t.point));
+  card.appendChild(pt);
+
+  var foot = document.createElement("div"); foot.className = "term-foot";
+  if (t.rel && t.rel.length){
+    var rel = document.createElement("div"); rel.className = "rel";
+    var lab = document.createElement("span"); lab.textContent = "関連："; rel.appendChild(lab);
+    t.rel.forEach(function(rid){
+      var rt = BYID[rid]; if (!rt) return;
+      var rb = document.createElement("button");
+      rb.type = "button"; rb.textContent = rt.jp;
+      rb.addEventListener("click", function(){ jumpTo(rid); });
+      rel.appendChild(rb);
+    });
+    foot.appendChild(rel);
+  }
+  var links = document.createElement("div"); links.className = "term-links";
+  if (t.sheet){
+    var a = document.createElement("a");
+    a.href = SUMMARY + "#" + t.sheet;
+    a.textContent = "まとめシートで見る →";
+    links.appendChild(a);
+  }
+  if (t.branch){
+    var a2 = document.createElement("a");
+    a2.href = MINDMAP;
+    a2.textContent = "マインドマップ「" + t.branch + "」の枝 →";
+    links.appendChild(a2);
+  }
+  if (links.childNodes.length) foot.appendChild(links);
+  card.appendChild(foot);
+  return card;
+}
+
+function render(){
+  listEl.innerHTML = "";
+  var shown = 0;
+  CATS.forEach(function(c){
+    var items = TERMS.filter(function(t){ return t.cat===c.id && matches(t); });
+    if (!items.length) return;
+    shown += items.length;
+    var head = document.createElement("div"); head.className = "cat-head";
+    head.style.setProperty("--c", c.color);
+    var dot = document.createElement("span"); dot.className = "cdot"; dot.style.background = c.color; head.appendChild(dot);
+    var h2 = document.createElement("h2"); h2.textContent = c.label; head.appendChild(h2);
+    var cen = document.createElement("span"); cen.className = "cen"; cen.textContent = c.en; head.appendChild(cen);
+    var cc = document.createElement("span"); cc.className = "ccount"; cc.textContent = items.length + "語"; head.appendChild(cc);
+    listEl.appendChild(head);
+    var desc = document.createElement("p"); desc.className = "cat-desc"; desc.textContent = c.desc; listEl.appendChild(desc);
+    var grid = document.createElement("div"); grid.className = "term-grid";
+    items.forEach(function(t){ grid.appendChild(termCard(t)); });
+    listEl.appendChild(grid);
+  });
+  emptyEl.classList.toggle("show", shown === 0);
+  countEl.innerHTML = "";
+  countEl.appendChild(document.createTextNode("全"));
+  var s1 = document.createElement("strong"); s1.textContent = TERMS.length + "語"; countEl.appendChild(s1);
+  countEl.appendChild(document.createTextNode("中 "));
+  var s2 = document.createElement("strong"); s2.textContent = shown + "語"; countEl.appendChild(s2);
+  countEl.appendChild(document.createTextNode(" を表示中"));
+}
+
+function jumpTo(id){
+  state.q = ""; qEl.value = ""; state.cat = "all";
+  renderChips(); render();
+  var el = document.getElementById("term-" + id);
+  if (!el) return;
+  el.scrollIntoView({ behavior:"smooth", block:"center" });
+  el.classList.remove("flash");
+  void el.offsetWidth;
+  el.classList.add("flash");
+  if (history.replaceState) history.replaceState(null, "", "#term-" + id);
+}
+
+qEl.addEventListener("input", function(){ state.q = qEl.value.trim(); render(); });
+document.getElementById("clearBtn").addEventListener("click", function(){
+  state.q = ""; qEl.value = ""; state.cat = "all"; renderChips(); render(); qEl.focus();
+});
+
+renderChips();
+render();
+
+if (location.hash && location.hash.indexOf("#term-") === 0){
+  var hid = location.hash.slice(6);
+  if (BYID[hid]){
+    var hel = document.getElementById("term-" + hid);
+    if (hel){ hel.scrollIntoView({ block:"center" }); hel.classList.add("flash"); }
+  }
+}
+</script>
+<div style="position:fixed;left:12px;bottom:12px;z-index:9999;"><a href="index.html" style="display:inline-block;padding:8px 14px;border-radius:999px;background:rgba(20,24,32,.88);color:#fff;font-size:13px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25);">← データ分析 成果物の入口へ</a></div></body>
+</html>

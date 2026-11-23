@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>データ分析 成果物 | msfabrica.jp</title>
+<style>
+  :root{ --bg:#f6f7f9; --card:#fff; --ink:#1c2430; --muted:#5b6b7f; --line:#d9e0e8; --accent:#2563eb; }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#12161c; --card:#1b212b; --ink:#e8edf3; --muted:#9fb0c3; --line:#2c3644; --accent:#3b82f6; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+  .wrap{max-width:880px;margin:0 auto;padding:24px 16px 64px}
+  a{color:var(--accent)}
+  .back{font-size:14px;text-decoration:none}
+  h1{font-size:26px;margin:12px 0 6px}
+  .sub{color:var(--muted);margin:0 0 8px}
+  .note{font-size:13px;color:var(--muted);border:1px solid var(--line);background:var(--card);border-radius:12px;padding:12px 16px;margin:16px 0 24px}
+  .grid{display:grid;grid-template-columns:1fr;gap:14px}
+  @media (min-width:640px){ .grid{grid-template-columns:1fr 1fr} }
+  .card{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;text-decoration:none;color:var(--ink)}
+  .card:hover{border-color:var(--accent)}
+  .kicker{font-size:12px;letter-spacing:.08em;color:var(--accent);font-weight:700;margin:0 0 4px}
+  .card h2{font-size:18px;margin:0 0 6px}
+  .card p{margin:0;color:var(--muted);font-size:14px}
+  .go{display:inline-block;margin-top:10px;color:var(--accent);font-size:14px;font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../">← msfabrica.jp トップへ</a>
+  <h1>データ分析 成果物</h1>
+  <p class="sub">データ分析入門の学習で作成した成果物の一式です。</p>
+  <div class="note">このページ以下は Cloudflare Access で保護されており、許可されたアカウントでログインした人だけが閲覧できます。</div>
+
+  <div class="grid">
+    <a class="card" href="summary.html">
+      <p class="kicker">SUMMARY SHEET</p>
+      <h2>データ分析入門・まとめシート</h2>
+      <p>データ分析とは何か、6ステップのプロセス、道具とスキルアップ、分析の4類型と企業事例、プロセスのバリエーション、データ主導の意思決定などを1枚にまとめたシート。</p>
+      <span class="go">開く →</span>
+    </a>
+    <a class="card" href="mindmap.html">
+      <p class="kicker">MIND MAP</p>
+      <h2>データ分析マインドマップ</h2>
+      <p>中心の「データ分析」から、6ステップ、5つの分析スキル、データ戦略、思考法、コミュニケーション、情報整理と管理へ枝を広げた対話型マインドマップ（5回のなぜを含む）。</p>
+      <span class="go">開く →</span>
+    </a>
+    <a class="card" href="glossary.html">
+      <p class="kicker">GLOSSARY</p>
+      <h2>データ分析用語集</h2>
+      <p>コース1・モジュール1の公式用語と関連用語、全44語の用語集。検索とカテゴリでの絞り込み、関連用語へのジャンプ付き。</p>
+      <span class="go">開く →</span>
+    </a>
+    <a class="card" href="checklist.html">
+      <p class="kicker">CHECKLIST</p>
+      <h2>情報整理チェックリスト（静的版）</h2>
+      <p>情報整理のチェックリスト A〜D・12項目をブラウザだけで使える形にした静的版。進捗表示、ファイル名メーカー、データ辞書付き。記録はこの端末のブラウザ（localStorage）に保存され、サーバーには送られません。</p>
+      <span class="go">開く →</span>
+    </a>
+  </div>
+</div>
+</body>
+</html>

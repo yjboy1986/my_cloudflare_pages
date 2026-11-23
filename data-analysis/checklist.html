@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>情報整理チェックリスト（静的版） | データ分析</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#fff; --ink:#1c2430; --muted:#5b6b7f; --line:#d9e0e8;
+    --accent:#2563eb; --accent-ink:#fff; --ok:#15803d; --warn:#b45309;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#12161c; --card:#1b212b; --ink:#e8edf3; --muted:#9fb0c3; --line:#2c3644; --accent:#3b82f6; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+  .wrap{max-width:880px;margin:0 auto;padding:20px 16px 64px}
+  a{color:var(--accent)}
+  .back{font-size:14px;text-decoration:none}
+  h1{font-size:24px;margin:10px 0 4px}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 16px}
+  .note{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:13px;color:var(--muted);margin-bottom:20px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+  .card h2{font-size:17px;margin:0 0 10px}
+  .card h3{font-size:15px;margin:16px 0 6px}
+  label{font-size:14px}
+  input[type="text"],input[type="date"],input[type="number"]{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font-size:15px}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  .row>*{flex:1}
+  button{cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:8px 14px;font-size:14px}
+  button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  button.danger{color:#dc2626}
+  button:disabled{opacity:.45;cursor:default}
+  .proj-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .proj{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg)}
+  .proj.active{border-color:var(--accent)}
+  .proj .name{font-weight:600}
+  .proj .meta{font-size:12px;color:var(--muted)}
+  .proj .sp{flex:1}
+  .bar{height:10px;background:var(--line);border-radius:999px;overflow:hidden;margin:8px 0}
+  .bar>i{display:block;height:100%;background:var(--accent);width:0%}
+  .big{font-size:28px;font-weight:700}
+  .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:13px;margin:2px 4px 2px 0}
+  .pill.done{border-color:var(--ok);color:var(--ok);font-weight:600}
+  .item{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px dashed var(--line)}
+  .item:first-of-type{border-top:none}
+  .item input{width:20px;height:20px;margin-top:3px;flex:none}
+  .item .key{font-size:12px;color:var(--muted)}
+  .item.core .txt::after{content:" ★最低限の3点";font-size:12px;color:var(--warn);font-weight:600}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{border-top:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+  th{font-size:12px;color:var(--muted)}
+  .fname{font-family:ui-monospace,Menlo,monospace;font-size:16px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;word-break:break-all}
+  .empty{color:var(--muted);font-size:14px}
+  .sec-count{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← データ分析 成果物の入口へ</a>
+  <h1>情報整理チェックリスト（静的版）</h1>
+  <p class="sub">データ分析の案件ごとに、情報の整理と管理の抜け漏れを防ぐためのチェックリストです。Muse 上の「情報整理チェックリスト」アプリと同じ A〜D・12項目を、ブラウザだけで動く形にしたものです。</p>
+  <div class="note">このページの記録は、この端末・このブラウザの <strong>localStorage</strong> に保存されます。サーバーには送信されません。別の端末やブラウザでは表示されず、ブラウザのデータを消すと記録も消えます。大事な案件の記録は Muse 上のアプリ版（記録が残る版）もあわせてご利用ください。</div>
+
+  <div class="card">
+    <h2>案件</h2>
+    <div class="row">
+      <div style="flex:2"><label>案件名<input type="text" id="p-name" placeholder="例：月次売上レポート"></label></div>
+      <div><label>日付<input type="date" id="p-date"></label></div>
+      <div style="flex:0"><label>&nbsp;<button class="primary" id="p-add" style="width:100%">追加</button></label></div>
+    </div>
+    <div class="proj-list" id="proj-list"></div>
+  </div>
+
+  <div class="card" id="detail" hidden>
+    <h2 id="d-title">案件の詳細</h2>
+    <div><span class="big" id="d-pct">0%</span> <span class="sec-count" id="d-count"></span></div>
+    <div class="bar"><i id="d-bar"></i></div>
+    <div id="d-points"></div>
+    <div id="d-sections"></div>
+  </div>
+
+  <div class="card">
+    <h2>ファイル名メーカー</h2>
+    <p class="sub">「日付_テーマ_v番号」の形を作ります。「最終版」「本当の最終版」を防ぐための道具です。</p>
+    <div class="row">
+      <div><label>日付<input type="date" id="f-date"></label></div>
+      <div style="flex:2"><label>テーマ<input type="text" id="f-theme" placeholder="例：売上集計"></label></div>
+      <div><label>版（v）<input type="number" id="f-ver" value="1" min="1" step="1"></label></div>
+    </div>
+    <div class="row" style="margin-top:10px;align-items:center">
+      <div class="fname" id="f-out" style="flex:3"></div>
+      <div style="flex:0;display:flex;gap:8px">
+        <button id="f-up">版を上げる</button>
+        <button class="primary" id="f-copy">コピー</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="dict-card" hidden>
+    <h2>データ辞書</h2>
+    <p class="sub">選択中の案件に、指標や列の定義・出所を残します。</p>
+    <div class="row">
+      <div><label>項目名<input type="text" id="dic-term" placeholder="例：売上"></label></div>
+      <div style="flex:2"><label>定義<input type="text" id="dic-def" placeholder="例：返品を引いた請求額"></label></div>
+      <div><label>出所・単位<input type="text" id="dic-src" placeholder="例：販売管理システム／円"></label></div>
+      <div style="flex:0"><label>&nbsp;<button class="primary" id="dic-add" style="width:100%">追加</button></label></div>
+    </div>
+    <div id="dic-list" style="margin-top:10px"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+var KEY = "msfabrica-checklist-v1";
+var SECTIONS = [
+  { id:"A", title:"A. 始める前（Prepare）- 正本と定義", items:[
+    { id:"a1", text:"使うデータの「正本」（唯一の最新版）はどれか決まっている" },
+    { id:"a2", text:"ファイル名に日付と版が入っている（例：20261201_売上集計_v2。「最終版」「本当の最終版」と書かない）" },
+    { id:"a3", text:"指標の定義が文書で残っている（例：売上＝返品を引いた請求額、など部署で食い違わない形で）", core:"definition" },
+    { id:"a4", text:"各列の意味・単位・出所・更新日が分かる（メタデータ／データ辞書がある）" }
+  ]},
+  { id:"B", title:"B. 扱うとき（Process）- 品質", items:[
+    { id:"b1", text:"重複、空白、表記ゆれをチェックした。空白は理由（未回答か入力ミスか）を確認してから扱いを決めた" },
+    { id:"b2", text:"元データは上書きせず、加工用は別ファイル／別シートに分けてある", core:"original" },
+    { id:"b3", text:"加工の手順をメモした（誰が再実行しても同じ結果になる形で）" }
+  ]},
+  { id:"C", title:"C. アクセスと安全", items:[
+    { id:"c1", text:"誰が見られるデータか決まっている。給与など個人が分かるデータは、置き場所と共有範囲を限定した" },
+    { id:"c2", text:"共有は集計レベルにし、少人数グループで個人が特定される形になっていない" }
+  ]},
+  { id:"D", title:"D. 共有・保管（Share の後）", items:[
+    { id:"d1", text:"報告に使ったデータと手順が、報告とセットで保管されている（後から再現できる）", core:"repro" },
+    { id:"d2", text:"古い版は「旧版」と分かる場所に寄せ、現行版と混ざっていない" },
+    { id:"d3", text:"次回同じ分析をするときの担当と更新タイミングが決まっている" }
+  ]}
+];
+var ALL_ITEMS = [];
+SECTIONS.forEach(function(s){ s.items.forEach(function(it){ ALL_ITEMS.push(it.id); }); });
+var POINTS = [
+  { label:"正本・定義", needs:["a1","a3"] },
+  { label:"元データ保護", needs:["b2"] },
+  { label:"再現性", needs:["d1"] }
+];
+
+function load(){
+  try{ var d = JSON.parse(localStorage.getItem(KEY) || "{}"); if(!d.projects) d = {projects:[], current:null}; return d; }
+  catch(e){ return {projects:[], current:null}; }
+}
+function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+var state = load();
+
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function today(){ var d=new Date(); function p(n){return (n<10?"0":"")+n;} return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate()); }
+function current(){ for(var i=0;i<state.projects.length;i++){ if(state.projects[i].id===state.current) return state.projects[i]; } return null; }
+function progress(p){
+  var done = ALL_ITEMS.filter(function(id){ return p.checks[id]; }).length;
+  return { done:done, total:ALL_ITEMS.length, pct: Math.round(done/ALL_ITEMS.length*100) };
+}
+function pointsDone(p){
+  return POINTS.map(function(pt){ return pt.needs.every(function(id){ return !!p.checks[id]; }); });
+}
+
+function renderProjects(){
+  var box = document.getElementById("proj-list");
+  if(!state.projects.length){ box.innerHTML = '<p class="empty">まだ案件がありません。上のフォームから追加してください。</p>'; }
+  else{
+    box.innerHTML = state.projects.map(function(p){
+      var pr = progress(p);
+      return '<div class="proj'+(p.id===state.current?" active":"")+'">'
+        + '<div><div class="name">'+esc(p.name)+'</div><div class="meta">'+esc(p.date||"")+' ・ 進捗 '+pr.pct+'%（'+pr.done+'/'+pr.total+'）</div></div>'
+        + '<div class="sp"></div>'
+        + '<button data-open="'+p.id+'">'+(p.id===state.current?"表示中":"開く")+'</button>'
+        + '<button class="danger" data-del="'+p.id+'">削除</button></div>';
+    }).join("");
+  }
+  box.querySelectorAll("[data-open]").forEach(function(b){ b.addEventListener("click", function(){ state.current = b.getAttribute("data-open"); save(); render(); }); });
+  box.querySelectorAll("[data-del]").forEach(function(b){ b.addEventListener("click", function(){
+    var p = state.projects.filter(function(x){ return x.id===b.getAttribute("data-del"); })[0];
+    if(p && confirm("案件「"+p.name+"」を削除しますか？（この端末の記録から消えます）")){
+      state.projects = state.projects.filter(function(x){ return x.id!==p.id; });
+      if(state.current===p.id) state.current = state.projects.length? state.projects[0].id : null;
+      save(); render();
+    }
+  }); });
+}
+
+function renderDetail(){
+  var p = current();
+  var det = document.getElementById("detail");
+  var dic = document.getElementById("dict-card");
+  if(!p){ det.hidden = true; dic.hidden = true; return; }
+  det.hidden = false; dic.hidden = false;
+  document.getElementById("d-title").textContent = p.name + (p.date? "（"+p.date+"）" : "");
+  var pr = progress(p);
+  document.getElementById("d-pct").textContent = pr.pct + "%";
+  document.getElementById("d-count").textContent = pr.done + " / " + pr.total + " 項目";
+  document.getElementById("d-bar").style.width = pr.pct + "%";
+  var pd = pointsDone(p);
+  var n = pd.filter(Boolean).length;
+  document.getElementById("d-points").innerHTML =
+    '<div style="margin:8px 0 4px"><strong>最低限の3点： '+n+' / 3 点クリア</strong></div>'
+    + POINTS.map(function(pt,i){ return '<span class="pill'+(pd[i]?" done":"")+'">'+(pd[i]?"✓ ":"")+pt.label+'</span>'; }).join("")
+    + '<div class="sec-count">正本・定義＝Aの正本と定義の両方、元データ保護＝Bの元データ保護、再現性＝Dの保管、が済むと点が付きます。</div>';
+  document.getElementById("d-sections").innerHTML = SECTIONS.map(function(s){
+    var sd = s.items.filter(function(it){ return p.checks[it.id]; }).length;
+    var html = '<h3>'+s.title+' <span class="sec-count">'+sd+'/'+s.items.length+'</span></h3>';
+    html += s.items.map(function(it){
+      return '<label class="item'+(it.core?" core":"")+'"><input type="checkbox" data-check="'+it.id+'"'+(p.checks[it.id]?" checked":"")+'><span class="txt">'+esc(it.text)+'</span></label>';
+    }).join("");
+    return html;
+  }).join("");
+  det.querySelectorAll("[data-check]").forEach(function(cb){ cb.addEventListener("change", function(){
+    p.checks[cb.getAttribute("data-check")] = cb.checked; save(); render();
+  }); });
+  renderDict(p);
+}
+
+function renderDict(p){
+  var box = document.getElementById("dic-list");
+  if(!p.dict.length){ box.innerHTML = '<p class="empty">まだ登録がありません。</p>'; return; }
+  box.innerHTML = '<table><thead><tr><th>項目名</th><th>定義</th><th>出所・単位</th><th></th></tr></thead><tbody>'
+    + p.dict.map(function(e,i){
+      return '<tr><td>'+esc(e.term)+'</td><td>'+esc(e.def)+'</td><td>'+esc(e.src)+'</td>'
+        + '<td style="white-space:nowrap"><button data-dedit="'+i+'">編集</button> <button class="danger" data-ddel="'+i+'">削除</button></td></tr>';
+    }).join("") + '</tbody></table>';
+  box.querySelectorAll("[data-ddel]").forEach(function(b){ b.addEventListener("click", function(){
+    p.dict.splice(Number(b.getAttribute("data-ddel")),1); save(); renderDict(p);
+  }); });
+  box.querySelectorAll("[data-dedit]").forEach(function(b){ b.addEventListener("click", function(){
+    var e = p.dict[Number(b.getAttribute("data-dedit"))];
+    document.getElementById("dic-term").value = e.term;
+    document.getElementById("dic-def").value = e.def;
+    document.getElementById("dic-src").value = e.src;
+    p.dict.splice(Number(b.getAttribute("data-dedit")),1); save(); renderDict(p);
+    document.getElementById("dic-term").focus();
+  }); });
+}
+
+function render(){ renderProjects(); renderDetail(); }
+
+document.getElementById("p-date").value = today();
+document.getElementById("p-add").addEventListener("click", function(){
+  var name = document.getElementById("p-name").value.trim();
+  if(!name){ alert("案件名を入力してください。"); return; }
+  var p = { id:"p"+Date.now(), name:name, date:document.getElementById("p-date").value || today(), checks:{}, dict:[] };
+  state.projects.unshift(p); state.current = p.id;
+  document.getElementById("p-name").value = "";
+  save(); render();
+});
+document.getElementById("dic-add").addEventListener("click", function(){
+  var p = current(); if(!p) return;
+  var term = document.getElementById("dic-term").value.trim();
+  if(!term){ alert("項目名を入力してください。"); return; }
+  p.dict.push({ term:term, def:document.getElementById("dic-def").value.trim(), src:document.getElementById("dic-src").value.trim() });
+  document.getElementById("dic-term").value = ""; document.getElementById("dic-def").value = ""; document.getElementById("dic-src").value = "";
+  save(); renderDict(p);
+});
+
+var fDate = document.getElementById("f-date"), fTheme = document.getElementById("f-theme"),
+    fVer = document.getElementById("f-ver"), fOut = document.getElementById("f-out");
+fDate.value = today();
+function fname(){
+  var d = (fDate.value || today()).replace(/-/g,"");
+  var t = fTheme.value.trim() || "テーマ";
+  var v = Math.max(1, parseInt(fVer.value || "1", 10));
+  return d + "_" + t + "_v" + v;
+}
+function renderFname(){ fOut.textContent = fname(); }
+[fDate, fTheme, fVer].forEach(function(el){ el.addEventListener("input", renderFname); });
+document.getElementById("f-up").addEventListener("click", function(){ fVer.value = Math.max(1, parseInt(fVer.value||"1",10)) + 1; renderFname(); });
+document.getElementById("f-copy").addEventListener("click", function(){
+  var t = fname();
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){ alert("コピーしました： " + t); }, function(){ prompt("コピーしてください", t); }); }
+  else{ prompt("コピーしてください", t); }
+});
+renderFname();
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,811 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>データ分析マインドマップ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@700;900&display=swap" rel="stylesheet" />
+    <style>
+      button, [role="button"], select, summary, input:not([type="checkbox"], [type="radio"]) { min-height: 2rem; }
+
+      :root {
+        --bg: #f7f5f0;
+        --surface: #ffffff;
+        --surface-2: #efede6;
+        --ink: #23211c;
+        --ink-soft: #55524a;
+        --line: #d9d5c9;
+        --accent: #8c4a1f;
+        --b0: #2f6f6a; /* プロセス */
+        --b1: #b4552d; /* スキル */
+        --b2: #96700f; /* データ戦略 */
+        --b3: #5b4b8a; /* 思考法 */
+        --b4: #33658a; /* コミュニケーション */
+        --b5: #5f7a33; /* 情報整理 */
+        --shadow: 0 10px 30px rgba(35, 33, 28, .10);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #17181a;
+          --surface: #212226;
+          --surface-2: #2a2b30;
+          --ink: #ece9e2;
+          --ink-soft: #b3aea2;
+          --line: #3a3b40;
+          --accent: #e0a266;
+          --b0: #4faea4;
+          --b1: #e08a5f;
+          --b2: #d9b64a;
+          --b3: #a394d8;
+          --b4: #7db1d6;
+          --b5: #a5c46a;
+          --shadow: 0 10px 30px rgba(0, 0, 0, .45);
+        }
+      }
+
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+        line-height: 1.7;
+      }
+
+      .wrap { max-width: 1240px; margin: 0 auto; padding: 20px 18px 48px; }
+
+      /* ---------- intro ---------- */
+      .intro { max-width: 46em; }
+      .intro h1 {
+        font-family: "Noto Serif JP", "Hiragino Mincho ProN", serif;
+        font-weight: 900;
+        font-size: clamp(26px, 4.6vw, 40px);
+        line-height: 1.3;
+        margin: 6px 0 10px;
+        letter-spacing: .01em;
+      }
+      .intro p { margin: 0; color: var(--ink-soft); font-size: 15px; }
+      .intro p strong { color: var(--ink); }
+
+      /* ---------- legend ---------- */
+      .legend {
+        display: flex; flex-wrap: wrap; gap: 8px;
+        margin: 18px 0 4px;
+      }
+      .legend button {
+        display: inline-flex; align-items: center; gap: 8px;
+        min-height: 38px; padding: 6px 14px 6px 10px;
+        background: var(--surface);
+        border: 1.5px solid var(--line);
+        border-radius: 999px;
+        color: var(--ink);
+        font: inherit; font-size: 13.5px; font-weight: 700;
+        cursor: pointer;
+      }
+      .legend button .dot { width: 12px; height: 12px; border-radius: 50%; flex: none; }
+      .legend button[aria-pressed="true"] { border-color: var(--ink); background: var(--surface-2); }
+      .legend button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+      /* ---------- layout ---------- */
+      .stage {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 340px;
+        gap: 18px;
+        align-items: start;
+        margin-top: 14px;
+      }
+      @media (max-width: 940px) {
+        .stage { grid-template-columns: minmax(0, 1fr); }
+      }
+
+      .map-card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-shadow: var(--shadow);
+        padding: 10px;
+      }
+      .map-card svg { display: block; width: 100%; height: auto; }
+
+      /* ---------- svg nodes ---------- */
+      .link { fill: none; stroke-linecap: round; }
+      .node { cursor: pointer; }
+      .node rect {
+        stroke-width: 1.6;
+        transition: filter .15s ease;
+      }
+      .node text {
+        font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+        pointer-events: none;
+      }
+      .node:hover rect, .node:focus-visible rect { filter: brightness(1.06); }
+      .node:focus { outline: none; }
+      .node:focus-visible rect { stroke: var(--accent); stroke-width: 3; }
+      .node.selected rect { stroke: var(--ink); stroke-width: 3; }
+      .node.dim { opacity: .28; }
+      .link.dim { opacity: .12; }
+
+      /* ---------- detail panel ---------- */
+      .panel {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-shadow: var(--shadow);
+        padding: 20px 20px 16px;
+        position: sticky; top: 14px;
+      }
+      @media (max-width: 940px) { .panel { position: static; } }
+      .panel .crumb {
+        font-size: 12.5px; font-weight: 700; letter-spacing: .08em;
+        color: var(--ink-soft); margin: 0 0 6px;
+        display: flex; align-items: center; gap: 8px;
+      }
+      .panel .crumb .dot { width: 11px; height: 11px; border-radius: 50%; flex: none; }
+      .panel h2 {
+        font-family: "Noto Serif JP", "Hiragino Mincho ProN", serif;
+        font-size: 23px; font-weight: 900; line-height: 1.35; margin: 0 0 4px;
+      }
+      .panel .en { font-size: 13px; color: var(--ink-soft); margin: 0 0 12px; font-weight: 500; }
+      .panel .desc { font-size: 14.5px; margin: 0 0 12px; }
+      .panel ul { margin: 0 0 6px; padding-left: 1.25em; font-size: 14px; }
+      .panel li { margin: 4px 0; }
+      .panel .kids { border-top: 1px dashed var(--line); margin-top: 14px; padding-top: 12px; }
+      .panel .kids p { font-size: 12.5px; font-weight: 700; color: var(--ink-soft); margin: 0 0 8px; letter-spacing: .06em; }
+      .panel .kids .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+      .panel .kids button {
+        min-height: 36px; padding: 5px 12px;
+        border-radius: 999px; border: 1.5px solid var(--line);
+        background: var(--surface-2); color: var(--ink);
+        font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+      }
+      .panel .kids button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+      /* ---------- mobile tree ---------- */
+      .tree-card { display: none; }
+      @media (max-width: 940px) {
+        .map-card { display: none; }
+        .tree-card {
+          display: block;
+          background: var(--surface);
+          border: 1px solid var(--line);
+          border-radius: 14px;
+          box-shadow: var(--shadow);
+          padding: 14px 14px 8px;
+        }
+      }
+      .tree-center {
+        width: 100%; min-height: 52px;
+        border: none; border-radius: 10px;
+        background: var(--ink); color: var(--bg);
+        font: inherit; font-size: 17px; font-weight: 900;
+        cursor: pointer; margin-bottom: 10px;
+      }
+      .tree-branch { border-top: 1px solid var(--line); }
+      .tree-branch-head {
+        width: 100%; min-height: 48px;
+        display: flex; align-items: center; gap: 10px;
+        background: none; border: none; padding: 8px 4px;
+        font: inherit; font-size: 15.5px; font-weight: 700; color: var(--ink);
+        cursor: pointer; text-align: left;
+      }
+      .tree-branch-head .dot { width: 13px; height: 13px; border-radius: 50%; flex: none; }
+      .tree-branch-head .chev { margin-left: auto; color: var(--ink-soft); font-size: 13px; transition: transform .18s ease; }
+      .tree-branch.open .tree-branch-head .chev { transform: rotate(180deg); }
+      .tree-kids { display: none; padding: 2px 0 12px 23px; }
+      .tree-branch.open .tree-kids { display: block; }
+      .tree-kid {
+        display: block; width: 100%; min-height: 42px;
+        text-align: left; margin: 5px 0;
+        background: var(--surface-2);
+        border: 1.5px solid var(--line); border-radius: 9px;
+        padding: 7px 12px;
+        font: inherit; font-size: 14px; font-weight: 500; color: var(--ink);
+        cursor: pointer;
+      }
+      .tree-kid.selected, .tree-branch-head.selected, .tree-center.selected {
+        border-color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink);
+      }
+      button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+      /* ---------- 関連資料リンク ---------- */
+      .set-nav {
+        display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+        margin-top: 16px;
+      }
+      .set-nav .set-label {
+        font-size: 12.5px; font-weight: 700; letter-spacing: .08em;
+        color: var(--ink-soft); margin-right: 2px;
+      }
+      .set-nav a, .set-nav .current {
+        display: inline-flex; align-items: center; gap: 7px;
+        min-height: 38px; padding: 6px 14px;
+        border-radius: 999px;
+        font-size: 13.5px; font-weight: 700;
+        text-decoration: none;
+      }
+      .set-nav a {
+        background: var(--surface); color: var(--ink);
+        border: 1.5px solid var(--line);
+      }
+      .set-nav a:hover { border-color: var(--accent); color: var(--accent); }
+      .set-nav a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+      .set-nav a .arr { color: var(--accent); font-weight: 900; }
+      .set-nav .current {
+        background: var(--ink); color: var(--bg);
+        border: 1.5px solid var(--ink);
+      }
+      .set-nav .new-tag {
+        font-size: 11px; font-weight: 900; letter-spacing: .06em;
+        background: var(--accent); color: #fff;
+        border-radius: 999px; padding: 1px 8px; line-height: 1.6;
+      }
+      @media (prefers-color-scheme: dark) {
+        .set-nav .new-tag { color: #1d1409; }
+      }
+
+      .related { margin-top: 30px; }
+      .related h2 {
+        font-family: "Noto Serif JP", "Hiragino Mincho ProN", serif;
+        font-size: 20px; font-weight: 900; margin: 0 0 6px;
+      }
+      .related .rel-lead { margin: 0 0 14px; color: var(--ink-soft); font-size: 14px; max-width: 46em; }
+      .rel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      @media (max-width: 680px) { .rel-grid { grid-template-columns: 1fr; } }
+      a.rel-card {
+        display: block; text-decoration: none; color: var(--ink);
+        background: var(--surface); border: 1px solid var(--line);
+        border-radius: 14px; box-shadow: var(--shadow);
+        padding: 18px 20px 16px;
+      }
+      a.rel-card:hover { border-color: var(--accent); }
+      a.rel-card:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+      .rel-card .rel-kind {
+        font-size: 12px; font-weight: 700; letter-spacing: .1em;
+        color: var(--accent); margin: 0 0 4px;
+        display: flex; align-items: center; gap: 8px;
+      }
+      .rel-card .rel-kind .new-tag {
+        font-size: 11px; font-weight: 900; letter-spacing: .06em;
+        background: var(--accent); color: #fff;
+        border-radius: 999px; padding: 1px 8px; line-height: 1.6;
+      }
+      @media (prefers-color-scheme: dark) {
+        .rel-card .rel-kind .new-tag { color: #1d1409; }
+      }
+      .rel-card h3 {
+        font-family: "Noto Serif JP", "Hiragino Mincho ProN", serif;
+        font-size: 18px; font-weight: 900; margin: 0 0 6px; line-height: 1.4;
+      }
+      .rel-card p { margin: 0 0 10px; font-size: 13.5px; color: var(--ink-soft); }
+      .rel-card .rel-go { font-size: 13.5px; font-weight: 700; color: var(--accent); }
+
+      .foot { margin-top: 22px; color: var(--ink-soft); font-size: 13px; max-width: 46em; }
+
+      @media (prefers-reduced-motion: reduce) {
+        * { transition: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="intro">
+        <h1>データ分析マインドマップ</h1>
+        <p>中心の<strong>「データ分析」</strong>から、プロセス・スキル・戦略・思考法・コミュニケーション・情報整理の6つの枝が広がります。<strong>ノードを選ぶ</strong>と、その項目の解説が読めます。</p>
+        <nav class="set-nav" aria-label="データ分析入門の関連資料">
+          <span class="set-label">関連資料</span>
+          <a href="summary.html">まとめシート<span class="arr" aria-hidden="true">→</span></a>
+          <span class="current" aria-current="page">マインドマップ</span>
+          <a href="glossary.html">用語集<span class="new-tag">新規</span><span class="arr" aria-hidden="true">→</span></a>
+        </nav>
+      </header>
+
+      <nav class="legend" id="legend" aria-label="枝を選ぶ"></nav>
+
+      <div class="stage">
+        <div>
+          <div class="map-card" id="mapCard" aria-label="マインドマップ（図）"></div>
+          <div class="tree-card" id="treeCard" aria-label="マインドマップ（一覧）"></div>
+        </div>
+
+        <aside class="panel" id="panel" aria-live="polite">
+          <p class="crumb"><span class="dot" id="pDot" style="background:var(--ink)"></span><span id="pCrumb">中心</span></p>
+          <h2 id="pTitle">データ分析</h2>
+          <p class="en" id="pEn"></p>
+          <p class="desc" id="pDesc"></p>
+          <ul id="pPoints"></ul>
+          <div class="kids" id="pKids" hidden>
+            <p>この枝の項目</p>
+            <div class="chips" id="pChips"></div>
+          </div>
+        </aside>
+      </div>
+
+      <section class="related" aria-label="関連資料">
+        <h2>関連資料</h2>
+        <p class="rel-lead">このマインドマップは、まとめシート・用語集と3点セットです。全体像はこのマップで、読み返しはまとめシートで、言葉の定義は用語集で確認できます。</p>
+        <div class="rel-grid">
+          <a class="rel-card" href="glossary.html">
+            <p class="rel-kind">用語集<span class="new-tag">新規</span></p>
+            <h3>データ分析用語集</h3>
+            <p>コース1・モジュール1の公式用語を、日本語で引ける辞書にしました。分析的思考、技術的思考、データ設計、データ戦略、根本原因など、マップやまとめシートで迷った言葉の定義をここで確認できます。</p>
+            <span class="rel-go">用語集を開く →</span>
+          </a>
+          <a class="rel-card" href="summary.html">
+            <p class="rel-kind">まとめシート</p>
+            <h3>データ分析入門・まとめシート</h3>
+            <p>6ステップ、分析の4類型、企業事例、データ主導の意思決定（成功例と失敗例）までを1枚に圧縮した復習シート。マップで全体像をつかんだあとの読み返しにどうぞ。</p>
+            <span class="rel-go">まとめシートを開く →</span>
+          </a>
+        </div>
+      </section>
+
+      <p class="foot">読み方のコツ：まず中心から枝をたどって全体像をつかみ、気になる枝は子ノードまで開いてみてください。特に「データ戦略」は他のスキルを束ねる司令塔として、枝をまたいで関係しています。</p>
+    </div>
+
+    <script>
+      "use strict";
+
+      /* ============ データ ============ */
+      var CENTER = {
+        id: "center",
+        label: "データ分析",
+        en: "Data Analysis",
+        desc: "データを集めて終わりではなく、問いを立て、整え、読み解き、伝えて、行動につなげる一連の営み。このマップはその全体像を6つの枝で整理したものです。",
+        points: [
+          "土台は「言葉の定義をそろえること」から始まる",
+          "技術だけでなく、人・プロセス・ツールを組み合わせる力が要る",
+          "最終目的は、根拠のある意思決定と行動"
+        ]
+      };
+
+      var BRANCHES = [
+        {
+          id: "process", label: "6ステップのプロセス", en: "The 6-Step Process",
+          desc: "分析という大きな仕事を、構造的思考で段階に分解した標準の進め方。前の段階の曖昧さは後の全部に響くため、特に最初の Ask が重要とされます。",
+          points: ["段階を飛ばすと手戻りが増える", "修正コストは工程が進むほど跳ね上がる"],
+          kids: [
+            { id: "ask", label: "Ask 尋ねる", en: "Ask",
+              desc: "解くべき問題、関係者、結果を使う意思決定、成功の基準を決める段階。言葉の定義のずれを一番安く直せる場所であり、最も重要なステップと言われます。",
+              points: ["「売上」のような言葉の定義を確認する", "目的・範囲・期限・成果物の形をそろえる"] },
+            { id: "prepare", label: "Prepare 準備する", en: "Prepare",
+              desc: "必要なデータを集め、使える形に整える準備の段階。正本の決定や定義の文書化など、情報整理チェックリストのAが効く場所です。",
+              points: ["使うデータの「正本」を決める", "各列の意味・出所・更新日を確認する"] },
+            { id: "process-step", label: "Process 処理する", en: "Process",
+              desc: "重複・空白・表記ゆれを処理し、分析できる状態にする段階。空白が未回答なのか入力ミスなのか、理由を確認してから扱いを決めます。",
+              points: ["元データは上書きせず、加工用を分ける", "加工の手順をメモし、再現できるようにする"] },
+            { id: "analyze", label: "Analyze 分析する", en: "Analyze",
+              desc: "パターンや関係を見つけ、問いへの答えを導く段階。可視化や相関への注目、全体と細部の往復が効きます。",
+              points: ["数字の羅列を「意味のある繰り返し」に変える", "偏りや集中など、パターンの所在を探る"] },
+            { id: "share", label: "Share 共有する", en: "Share",
+              desc: "結果を、相手に伝わる形で共有する段階。出しただけでなく、解釈が正しく伝わっているかの確認まで含みます。",
+              points: ["誰に・何を・どう伝えるかを設計する", "報告とデータ・手順をセットで保管する"] },
+            { id: "act", label: "Act 行動する", en: "Act",
+              desc: "分析結果を実際の行動と意思決定につなげる段階。ここに届いて初めて、分析は価値を生みます。",
+              points: ["提言を具体的な行動に落とす", "結果を振り返り、次の Ask につなげる"] }
+          ]
+        },
+        {
+          id: "skills", label: "5つの分析スキル", en: "Key Data Analyst Skills",
+          desc: "アナリストに求められる5つの能力。どれか1つではなく、組み合わせて使うものですが、中でもデータ戦略は守備範囲が最も広く、最も難しいとされます。",
+          points: ["好奇心が問いを生み、戦略が優先順位をつける", "スキル同士は支え合う関係にある"],
+          kids: [
+            { id: "curiosity", label: "好奇心", en: "Curiosity",
+              desc: "疑問を持ち、問いを生み出す力。ただし生まれた問いが多すぎると資源が分散するため、戦略による優先順位づけと対になります。",
+              points: ["分かったつもりで進めない姿勢", "曖昧な言葉に立ち止まる感度"] },
+            { id: "context", label: "コンテキスト理解", en: "Understanding Context",
+              desc: "背景・関係者・制約を把握する力。データ戦略の前提（誰が関わるか、何が制約か）を与える土台です。",
+              points: ["数字の背後にある事情を読む", "関係者の期待と立場を把握する"] },
+            { id: "technical", label: "技術的マインドセット", en: "Technical Mindset",
+              desc: "物事を小さなステップや要素に分解し、秩序立てて論理的に取り組む能力。大きな問題を、道具や手順で扱える大きさまで割っていく力です。",
+              points: ["構造的思考と重なる部分が大きい", "分解したものを実行可能な手順に落とす"] },
+            { id: "datadesign", label: "データデザイン", en: "Data Design",
+              desc: "情報が効果的に使えるよう、その組織の仕方や配置の決め方に注目するスキル。実際に手を動かす中身は、データの整理（Data organization）と情報の構造化（Information structuring）です。",
+              points: ["何をどこに置き、どう分類・配置するか", "形式をそろえ、後から結合・集計できる形にする"] },
+            { id: "strategy-skill", label: "データ戦略", en: "Data Strategy",
+              desc: "人・プロセス・ツールを計画的に組み合わせ、データの使い方全体を設計するスキル。他の4つを束ねる司令塔であり、最も難しいとされます。詳しくは「データ戦略」の枝へ。",
+              points: ["技術＋コミュニケーション＋計画力が必要", "戦略なしでは分析が目的に届かない"] }
+          ]
+        },
+        {
+          id: "strategy", label: "データ戦略", en: "Data Strategy — 深掘り",
+          desc: "目標を達成するために、人（people）・プロセス（process）・ツール（technology）を計画的に組み合わせて、データの使い方全体を設計すること。分析が「作業」なら、戦略はその作業を目的に届かせる「作戦」です。",
+          points: ["データを集める前に、目的・資源・測り方を決める", "実生活でも形はそのまま使える（店舗運営・健康・学習）"],
+          kids: [
+            { id: "people", label: "人 People", en: "People",
+              desc: "関係者・専門家・意思決定者など、誰が関わるかを先に決める要素。人の調整が要る分、技術だけでは完結しません。",
+              points: ["意思決定者は誰か", "専門家の助けが要る場面はどこか"] },
+            { id: "process-p", label: "プロセス Process", en: "Process",
+              desc: "収集から共有までの流れとスケジュール。手順が決まっているからこそ、計画の変更にも対応できます。",
+              points: ["流れと順序を先に設計する", "見返すタイミング（振り返り）も含める"] },
+            { id: "tools", label: "ツール Technology", en: "Technology",
+              desc: "使う道具とデータそのもの。道具の選択は、目的とプロセスが決まってから行うのが順序です。",
+              points: ["道具ありきで始めない", "測る項目は絞る"] },
+            { id: "measure", label: "成功の測り方", en: "Measuring Success",
+              desc: "成功を何で測るかを先に決めること。例：店舗運営なら売上とリピート率、健康改善ならトラッカーの指標。測り方が曖昧だと、戦略の良し悪しも判断できません。",
+              points: ["指標は目的に直結させる", "測る頻度も決めておく"] },
+            { id: "command", label: "司令塔としての役割", en: "The Coordinator",
+              desc: "好奇心が生んだ問いを優先順位づけし、コンテキスト理解を前提に取り込み、他のスキルを目的へ束ねる位置。戦略だけあっても実行スキルがなければ絵に描いた餅になります。",
+              points: ["資源の分散を防ぐ", "「今やるべきもの」を決める"] }
+          ]
+        },
+        {
+          id: "thinking", label: "思考法", en: "Ways of Thinking",
+          desc: "分析の土台になる考え方。問題を構造に整理する力、データの意味を読み解く力、繰り返す規則性を見つける力、そして「なぜ」を重ねて根本原因まで掘る力が組み合わさります。",
+          points: ["思考法が弱いと、データを持っていても活かせない"],
+          kids: [
+            { id: "structured", label: "構造的思考", en: "Structured Thinking",
+              desc: "大きな問題を小さな要素やステップに分解し、論理的な順序に並べて考える力。抜けや重なりなく要素に分け、順番に検証していく土台で、6ステップのプロセス自体がこの考え方を手順にしたものです。",
+              points: ["全体像を把握してから分解する", "段階ごとに整理して解く"] },
+            { id: "analytical", label: "分析的思考", en: "Analytical Thinking",
+              desc: "データの意味を正しく読み解く力。これが欠けると、データがあっても意味を取り違え、誤った結論に至るリスクが高まります。",
+              points: ["可視化し、相関に注目する", "全体と細部を行き来して眺める"] },
+            { id: "pattern", label: "パターン発見", en: "Finding Patterns",
+              desc: "繰り返し起きている規則性を見つけること。見つけられないと、機会を逃す、問題の発見が遅れる、資源配分が非効率になる、判断が勘と声の大きさに戻る、といった影響が出ます。",
+              points: ["例：曜日×天候で売れる商品が変わる", "例：離職が特定の層に集中している"] },
+            { id: "five-whys", label: "5回のなぜ", en: "5 Whys",
+              desc: "問題に対して「なぜ？」を繰り返し問い、表面的な症状ではなく根本原因を特定する手法。トヨタの現場から広まった根本原因分析で、分析の4類型では「なぜ起きたか」を掘る診断的分析の道具にあたります。複雑なツールなしに本質へ迫れ、根本に手が届くため再発防止につながります。関係者と一緒に問いを重ねることで、異なる視点や情報の共有も進み、業界や問題の種類を問わず使えます。言い換えれば、明確化・具体化の質問を「原因の方向へ」繰り返す技法です。",
+              points: ["例：リピート率低下 → フォローメール未達 → 配信リスト登録の失敗 → データ連携の欠落 → エラー検知の仕組みがない", "各「なぜ」の答えは思いつきではなく、事実とデータで裏づける", "「5回」は目安：対策が変わらなくなる深さまで掘る。原因が複数なら木のように分岐させる"] }
+          ]
+        },
+        {
+          id: "communication", label: "コミュニケーション", en: "Communication",
+          desc: "相手の言葉の意味をそろえるための技法と姿勢。分析の現場でも日常でも、「分かったつもり」が誤解と手戻りの正体です。",
+          points: ["小さな確認の質問が、大きな手戻りを防ぐ"],
+          kids: [
+            { id: "clarification", label: "明確化", en: "Clarification",
+              desc: "曖昧な言葉の意味を確認する技法。同僚の「毎日何時間も play している」がスポーツなのか楽器なのかを尋ねるやりとりが典型例で、思い込みで解釈せず意味をそろえます。",
+              points: ["候補を挙げて聞くと相手が答えやすい", "開いて聞く形なら候補外の答えも拾える"] },
+            { id: "specification", label: "具体化", en: "Specification",
+              desc: "「具体的に何をしているのか」を尋ね、曖昧な言葉を共有できて測れる情報に変える技法。「売上が悪い」を「どの商品が、いつから、何％下がったか」に落とすように、概念を操作可能な定義に変えます。",
+              points: ["対象・期間・指標が決まって初めて分析できる", "表の言葉の奥にある本当の問題を掘り当てる"] },
+            { id: "definitions", label: "定義をそろえる", en: "Aligning Definitions",
+              desc: "「売上」「新規顧客」「離職率」のような言葉の意味を、関係者の間で統一すること。定義が部署ごとに違うと、会議は本題の前に「どちらの数字が正しいか」で止まります。",
+              points: ["定義は文書に残す（データ辞書）", "Ask の段階で確認するのが最も安い"] },
+            { id: "listening", label: "アクティブリスニング", en: "Active Listening",
+              desc: "相手の話を正確に理解しようとする姿勢。明確化や具体化の土台であり、「あなたの話を理解したい」という態度そのものが信頼につながります。",
+              points: ["決めつけずに聞く", "理解した内容を言葉で確かめる"] }
+          ]
+        },
+        {
+          id: "organization", label: "情報整理と管理", en: "Data Organization",
+          desc: "データを効果的に使える状態に保つための整理と構造化。失敗すると、数字の食い違い・最新版不明・意味と出所の喪失・権限の崩れ・誤りの自動拡散・再現不能といった問題が起きます。対策はチェックリストA〜Dです。",
+          points: ["整理と管理は裏方ではなく、分析の正確さ・速さ・信頼そのもの", "最低限の3点：正本と定義／元データ保護／再現性"],
+          kids: [
+            { id: "check-a", label: "A 正本と定義", en: "Prepare — Source & Definitions",
+              desc: "始める前の整え方。使うデータの正本（唯一の最新版）を決め、ファイル名には日付と版を入れ（「最終版」「本当の最終版」と書かない）、指標の定義とデータ辞書を用意します。",
+              points: ["命名例：20261201_売上集計_v2", "各列の意味・単位・出所・更新日を残す"] },
+            { id: "check-b", label: "B 品質チェック", en: "Process — Quality",
+              desc: "扱うときの品質管理。重複・空白・表記ゆれをチェックし、元データは上書きせず加工用を分け、加工手順をメモして誰が再実行しても同じ結果になるようにします。",
+              points: ["空白は理由を確認してから扱う", "手順のメモが再現性の土台"] },
+            { id: "check-c", label: "C アクセスと安全", en: "Access & Safety",
+              desc: "誰が見られるデータかを決めること。給与など個人が分かるデータは置き場所と共有範囲を限定し、共有は集計レベルにして、少人数グループで個人が特定される形を避けます。",
+              points: ["厳しすぎても分析が止まる、両極端を避ける", "人を扱うデータでは特に深刻"] },
+            { id: "check-d", label: "D 共有・保管", en: "Share — Storage",
+              desc: "共有した後の保管。報告に使ったデータと手順を報告とセットで保管して後から再現できるようにし、旧版は「旧版」と分かる場所に寄せ、次回の担当と更新タイミングを決めます。",
+              points: ["再現できない報告は信頼を失う", "繰り返し作業ほど履歴が効く"] }
+          ]
+        }
+      ];
+
+      var COLORS = ["var(--b0)", "var(--b1)", "var(--b2)", "var(--b3)", "var(--b4)", "var(--b5)"];
+      var RAW = ["#2f6f6a", "#b4552d", "#96700f", "#5b4b8a", "#33658a", "#5f7a33"];
+
+      /* id -> ノード情報の索引 */
+      var INDEX = {};
+      INDEX[CENTER.id] = { node: CENTER, branch: -1, parent: null };
+      BRANCHES.forEach(function (b, bi) {
+        INDEX[b.id] = { node: b, branch: bi, parent: CENTER };
+        b.kids.forEach(function (k) { INDEX[k.id] = { node: k, branch: bi, parent: b }; });
+      });
+
+      var selectedId = CENTER.id;
+      var focusBranch = -1; /* -1 = すべて表示 */
+
+      /* ============ 解説パネル ============ */
+      var pDot = document.getElementById("pDot"),
+          pCrumb = document.getElementById("pCrumb"),
+          pTitle = document.getElementById("pTitle"),
+          pEn = document.getElementById("pEn"),
+          pDesc = document.getElementById("pDesc"),
+          pPoints = document.getElementById("pPoints"),
+          pKids = document.getElementById("pKids"),
+          pChips = document.getElementById("pChips");
+
+      function renderPanel() {
+        var info = INDEX[selectedId], n = info.node;
+        var bi = info.branch;
+        pDot.style.background = bi >= 0 ? COLORS[bi] : "var(--ink)";
+        pCrumb.textContent = info.parent === null ? "中心" :
+          (info.parent === CENTER ? "枝（ブランチ）" : "枝：" + info.parent.label);
+        pTitle.textContent = n.label;
+        pEn.textContent = n.en || "";
+        pEn.style.display = n.en ? "" : "none";
+        pDesc.textContent = n.desc || "";
+        pPoints.innerHTML = "";
+        (n.points || []).forEach(function (t) {
+          var li = document.createElement("li");
+          li.textContent = t;
+          pPoints.appendChild(li);
+        });
+        var kids = n.kids || (info.parent === CENTER ? null : null);
+        var childList = (n === CENTER) ? BRANCHES : (n.kids || null);
+        if (childList && childList.length) {
+          pKids.hidden = false;
+          pChips.innerHTML = "";
+          childList.forEach(function (k) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.textContent = k.label;
+            btn.addEventListener("click", function () { select(k.id, true); });
+            pChips.appendChild(btn);
+          });
+        } else {
+          pKids.hidden = true;
+        }
+      }
+
+      /* ============ SVGマップ ============ */
+      var NS = "http://www.w3.org/2000/svg";
+      var W = 1200, CX = W / 2;
+      var BRANCH_DX = 248;   /* 中心→枝ノードの横距離 */
+      var KID_DX = 478;      /* 中心→子ノードの横距離 */
+      var KID_STEP = 54;     /* 子ノードの縦間隔 */
+      var BAND_GAP = 44;     /* 枝同士の縦間隔 */
+      /* 右側は上から 0,1,2 / 左側は上から 5,4,3（時計回りの読み順） */
+      var SIDES = [
+        { dir: 1, order: [0, 1, 2] },
+        { dir: -1, order: [5, 4, 3] }
+      ];
+
+      function el(name, attrs) {
+        var e = document.createElementNS(NS, name);
+        for (var k in attrs) e.setAttribute(k, attrs[k]);
+        return e;
+      }
+      function textWidth(label, fontSize) {
+        var w = 0;
+        for (var i = 0; i < label.length; i++) {
+          w += label.charCodeAt(i) > 255 ? fontSize : fontSize * 0.58;
+        }
+        return w;
+      }
+      function bandHeight(b) { return Math.max(64, b.kids.length * KID_STEP); }
+      function curve(x1, y1, x2, y2, dir) {
+        var c = Math.max(40, Math.abs(x2 - x1) * 0.45);
+        return "M" + x1 + "," + y1 +
+               " C" + (x1 + dir * c) + "," + y1 +
+               " " + (x2 - dir * c) + "," + y2 +
+               " " + x2 + "," + y2;
+      }
+
+      var svg, nodeEls = {}, linkEls = [];
+      var H = 900, CY = H / 2;
+
+      function layoutMap() {
+        var totals = SIDES.map(function (s) {
+          var t = 0;
+          s.order.forEach(function (bi, i) {
+            t += bandHeight(BRANCHES[bi]) + (i ? BAND_GAP : 0);
+          });
+          return t;
+        });
+        H = Math.max(totals[0], totals[1]) + 56;
+        CY = H / 2;
+        SIDES.forEach(function (s, si) {
+          var y = CY - totals[si] / 2;
+          s.order.forEach(function (bi) {
+            var b = BRANCHES[bi], bh = bandHeight(b);
+            b._x = CX + s.dir * BRANCH_DX;
+            b._y = y + bh / 2;
+            b._dir = s.dir;
+            var ky = b._y - (b.kids.length - 1) * KID_STEP / 2;
+            b.kids.forEach(function (k, ki) {
+              k._x = CX + s.dir * KID_DX;
+              k._y = ky + ki * KID_STEP;
+            });
+            y += bh + BAND_GAP;
+          });
+        });
+      }
+
+      function buildMap() {
+        layoutMap();
+        var card = document.getElementById("mapCard");
+        svg = el("svg", { viewBox: "0 0 " + W + " " + H, role: "group", "aria-label": "データ分析マインドマップ" });
+        card.appendChild(svg);
+
+        /* つながり線 */
+        BRANCHES.forEach(function (b, bi) {
+          var p1 = el("path", { d: curve(CX, CY, b._x, b._y, b._dir), "class": "link", stroke: RAW[bi], "stroke-width": 3, opacity: 0.6 });
+          p1.dataset.branch = bi;
+          svg.appendChild(p1); linkEls.push(p1);
+          b.kids.forEach(function (k) {
+            var p2 = el("path", { d: curve(b._x, b._y, k._x, k._y, b._dir), "class": "link", stroke: RAW[bi], "stroke-width": 1.6, opacity: 0.5 });
+            p2.dataset.branch = bi;
+            svg.appendChild(p2); linkEls.push(p2);
+          });
+        });
+
+        /* 子ノード → 枝ノード → 中心の順に描く */
+        BRANCHES.forEach(function (b, bi) {
+          b.kids.forEach(function (k) { svg.appendChild(makeNode(k, bi, false)); });
+        });
+        BRANCHES.forEach(function (b, bi) { svg.appendChild(makeNode(b, bi, true)); });
+        svg.appendChild(makeCenter());
+        refreshMapStates();
+      }
+
+      function makeNode(n, bi, isBranch) {
+        var fs = isBranch ? 16.5 : 13.5;
+        var w = Math.max(isBranch ? 132 : 104, textWidth(n.label, fs) + (isBranch ? 40 : 30));
+        var h = isBranch ? 52 : 42;
+        var g = el("g", { "class": "node", tabindex: "0", role: "button", "aria-label": n.label });
+        var rect = el("rect", {
+          x: n._x - w / 2, y: n._y - h / 2, width: w, height: h, rx: isBranch ? 14 : 11,
+          fill: "var(--surface)", stroke: COLORS[bi]
+        });
+        var t = el("text", {
+          x: n._x, y: n._y, "text-anchor": "middle", "dominant-baseline": "central",
+          "font-size": fs, "font-weight": isBranch ? 700 : 500, fill: "var(--ink)"
+        });
+        t.textContent = n.label;
+        g.appendChild(rect); g.appendChild(t);
+        g.addEventListener("click", function () { select(n.id, false); });
+        g.addEventListener("keydown", function (ev) {
+          if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); select(n.id, false); }
+        });
+        nodeEls[n.id] = g;
+        return g;
+      }
+
+      function makeCenter() {
+        var g = el("g", { "class": "node", tabindex: "0", role: "button", "aria-label": "データ分析（中心）" });
+        var rect = el("rect", { x: CX - 92, y: CY - 40, width: 184, height: 80, rx: 18, fill: "var(--ink)", stroke: "var(--ink)" });
+        var t = el("text", { x: CX, y: CY - 8, "text-anchor": "middle", "font-size": 21, "font-weight": 900, fill: "var(--bg)" });
+        t.textContent = "データ分析";
+        var t2 = el("text", { x: CX, y: CY + 20, "text-anchor": "middle", "font-size": 11.5, fill: "var(--bg)", opacity: 0.75 });
+        t2.textContent = "Data Analysis";
+        g.appendChild(rect); g.appendChild(t); g.appendChild(t2);
+        g.addEventListener("click", function () { select(CENTER.id, false); });
+        g.addEventListener("keydown", function (ev) {
+          if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); select(CENTER.id, false); }
+        });
+        nodeEls[CENTER.id] = g;
+        return g;
+      }
+
+      function refreshMapStates() {
+        Object.keys(nodeEls).forEach(function (id) {
+          var g = nodeEls[id];
+          g.classList.toggle("selected", id === selectedId);
+          var bi = INDEX[id].branch;
+          g.classList.toggle("dim", focusBranch >= 0 && bi >= 0 && bi !== focusBranch);
+        });
+        linkEls.forEach(function (p) {
+          p.classList.toggle("dim", focusBranch >= 0 && +p.dataset.branch !== focusBranch);
+        });
+      }
+
+      /* ============ モバイル用ツリー ============ */
+      function buildTree() {
+        var card = document.getElementById("treeCard");
+        var centerBtn = document.createElement("button");
+        centerBtn.type = "button";
+        centerBtn.className = "tree-center";
+        centerBtn.textContent = "データ分析（中心）";
+        centerBtn.dataset.id = CENTER.id;
+        centerBtn.addEventListener("click", function () { select(CENTER.id, false); });
+        card.appendChild(centerBtn);
+
+        BRANCHES.forEach(function (b, bi) {
+          var wrap = document.createElement("div");
+          wrap.className = "tree-branch" + (bi === 0 ? " open" : "");
+          var head = document.createElement("button");
+          head.type = "button";
+          head.className = "tree-branch-head";
+          head.dataset.id = b.id;
+          head.setAttribute("aria-expanded", bi === 0 ? "true" : "false");
+          head.innerHTML = "";
+          var dot = document.createElement("span");
+          dot.className = "dot"; dot.style.background = COLORS[bi];
+          var lab = document.createElement("span"); lab.textContent = b.label;
+          var chev = document.createElement("span"); chev.className = "chev"; chev.textContent = "▾";
+          head.appendChild(dot); head.appendChild(lab); head.appendChild(chev);
+          head.addEventListener("click", function () {
+            var open = wrap.classList.toggle("open");
+            head.setAttribute("aria-expanded", open ? "true" : "false");
+            select(b.id, false);
+          });
+          wrap.appendChild(head);
+
+          var kids = document.createElement("div");
+          kids.className = "tree-kids";
+          b.kids.forEach(function (k) {
+            var kb = document.createElement("button");
+            kb.type = "button";
+            kb.className = "tree-kid";
+            kb.dataset.id = k.id;
+            kb.textContent = k.label;
+            kb.addEventListener("click", function () { select(k.id, true); });
+            kids.appendChild(kb);
+          });
+          wrap.appendChild(kids);
+          card.appendChild(wrap);
+        });
+      }
+
+      function refreshTreeStates() {
+        var card = document.getElementById("treeCard");
+        card.querySelectorAll("[data-id]").forEach(function (elm) {
+          elm.classList.toggle("selected", elm.dataset.id === selectedId);
+        });
+        /* 選択中の子ノードの枝を開く */
+        var info = INDEX[selectedId];
+        if (info && info.parent && info.parent !== CENTER) {
+          card.querySelectorAll(".tree-branch").forEach(function (w) {
+            var head = w.querySelector(".tree-branch-head");
+            if (head && head.dataset.id === info.parent.id) {
+              w.classList.add("open");
+              head.setAttribute("aria-expanded", "true");
+            }
+          });
+        }
+      }
+
+      /* ============ 凡例（枝の絞り込み） ============ */
+      function buildLegend() {
+        var nav = document.getElementById("legend");
+        var all = document.createElement("button");
+        all.type = "button";
+        all.textContent = "全体";
+        all.setAttribute("aria-pressed", "true");
+        all.addEventListener("click", function () { setFocus(-1); });
+        nav.appendChild(all);
+        BRANCHES.forEach(function (b, bi) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.setAttribute("aria-pressed", "false");
+          var dot = document.createElement("span");
+          dot.className = "dot"; dot.style.background = COLORS[bi];
+          btn.appendChild(dot);
+          btn.appendChild(document.createTextNode(b.label));
+          btn.addEventListener("click", function () {
+            setFocus(focusBranch === bi ? -1 : bi);
+            select(b.id, false);
+          });
+          nav.appendChild(btn);
+        });
+        nav._btns = nav.querySelectorAll("button");
+      }
+      function setFocus(bi) {
+        focusBranch = bi;
+        var nav = document.getElementById("legend");
+        nav.querySelectorAll("button").forEach(function (btn, i) {
+          btn.setAttribute("aria-pressed", (i === 0 && bi < 0) || (i - 1 === bi) ? "true" : "false");
+        });
+        refreshMapStates();
+      }
+
+      /* ============ 選択 ============ */
+      function select(id, scrollPanel) {
+        selectedId = id;
+        renderPanel();
+        refreshMapStates();
+        refreshTreeStates();
+        if (scrollPanel && window.matchMedia("(max-width: 940px)").matches) {
+          document.getElementById("panel").scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+
+      buildMap();
+      buildTree();
+      buildLegend();
+      select(CENTER.id, false);
+    </script>
+  <div style="position:fixed;left:12px;bottom:12px;z-index:9999;"><a href="index.html" style="display:inline-block;padding:8px 14px;border-radius:999px;background:rgba(20,24,32,.88);color:#fff;font-size:13px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.25);">← データ分析 成果物の入口へ</a></div></body>
+</html>
