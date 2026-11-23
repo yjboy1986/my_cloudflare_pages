@@ -299,6 +299,7 @@ document.getElementById("dic-add").addEventListener("click", function(){
   var p = current(); if(!p) return;
   var term = document.getElementById("dic-term").value.trim();
   if(!term){ alert("項目名を入力してください。"); return; }
+  if(p.dict.some(function(e){ return e.term === term; })){ alert("その項目名はすでに登録されています。"); return; }
   p.dict.push({ term:term, def:document.getElementById("dic-def").value.trim(), src:document.getElementById("dic-src").value.trim() });
   document.getElementById("dic-term").value = ""; document.getElementById("dic-def").value = ""; document.getElementById("dic-src").value = "";
   save(); renderDict(p);
