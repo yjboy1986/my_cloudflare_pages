@@ -1,11 +1,128 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>hello world</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hello, World! — msfabrica.jp</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    background: #f6f7f9;
+    color: #1a1d21;
+    padding: 2rem 1rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    body { background: #14171a; color: #eceff1; }
+  }
+  main { text-align: center; }
+  h1 {
+    font-size: clamp(2.2rem, 8vw, 4.5rem);
+    margin: 0 0 0.5rem;
+    line-height: 1.2;
+  }
+  p { margin: 0; font-size: 1.1rem; opacity: 0.75; }
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    max-width: 640px;
+  }
+  nav button {
+    font: inherit;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    opacity: 0.65;
+  }
+  nav button:hover { opacity: 1; }
+  nav button[aria-pressed="true"] {
+    opacity: 1;
+    font-weight: 700;
+    background: #f6821f;
+    border-color: #f6821f;
+    color: #fff;
+  }
+</style>
 </head>
 <body>
-  <h1>hello world</h1>
+<main>
+  <h1 id="greeting">こんにちは、世界！</h1>
+  <p id="subtitle">msfabrica.jp へようこそ</p>
+</main>
+<nav id="langs" aria-label="Language"></nav>
+<script>
+  const messages = {
+    "ja":    { greeting: "こんにちは、世界！",        subtitle: "msfabrica.jp へようこそ",        label: "日本語" },
+    "en":    { greeting: "Hello, World!",             subtitle: "Welcome to msfabrica.jp",        label: "English" },
+    "zh-CN": { greeting: "你好，世界！",               subtitle: "欢迎来到 msfabrica.jp",          label: "简体中文" },
+    "zh-TW": { greeting: "你好，世界！",               subtitle: "歡迎來到 msfabrica.jp",          label: "繁體中文" },
+    "ko":    { greeting: "안녕하세요, 세상!",          subtitle: "msfabrica.jp에 오신 것을 환영합니다", label: "한국어" },
+    "es":    { greeting: "¡Hola, Mundo!",             subtitle: "Bienvenido a msfabrica.jp",      label: "Español" },
+    "fr":    { greeting: "Bonjour, le Monde !",       subtitle: "Bienvenue sur msfabrica.jp",     label: "Français" },
+    "de":    { greeting: "Hallo, Welt!",              subtitle: "Willkommen bei msfabrica.jp",    label: "Deutsch" },
+    "it":    { greeting: "Ciao, Mondo!",              subtitle: "Benvenuto su msfabrica.jp",      label: "Italiano" },
+    "pt":    { greeting: "Olá, Mundo!",               subtitle: "Bem-vindo ao msfabrica.jp",      label: "Português" },
+    "nl":    { greeting: "Hallo, Wereld!",            subtitle: "Welkom bij msfabrica.jp",        label: "Nederlands" },
+    "ru":    { greeting: "Привет, мир!",              subtitle: "Добро пожаловать на msfabrica.jp", label: "Русский" },
+    "ar":    { greeting: "مرحباً بالعالم!",            subtitle: "مرحباً بك في msfabrica.jp",        label: "العربية", dir: "rtl" },
+    "hi":    { greeting: "नमस्ते, दुनिया!",             subtitle: "msfabrica.jp में आपका स्वागत है",    label: "हिन्दी" },
+    "th":    { greeting: "สวัสดี, โลก!",               subtitle: "ยินดีต้อนรับสู่ msfabrica.jp",      label: "ไทย" },
+    "vi":    { greeting: "Xin chào, Thế giới!",       subtitle: "Chào mừng đến với msfabrica.jp", label: "Tiếng Việt" }
+  };
+
+  const nav = document.getElementById("langs");
+  const greetingEl = document.getElementById("greeting");
+  const subtitleEl = document.getElementById("subtitle");
+
+  function setLang(code) {
+    const m = messages[code] || messages["en"];
+    greetingEl.textContent = m.greeting;
+    subtitleEl.textContent = m.subtitle;
+    document.documentElement.lang = code;
+    document.documentElement.dir = m.dir || "ltr";
+    document.title = m.greeting + " — msfabrica.jp";
+    for (const btn of nav.children) {
+      btn.setAttribute("aria-pressed", btn.dataset.lang === code ? "true" : "false");
+    }
+    try { localStorage.setItem("lang", code); } catch (e) {}
+  }
+
+  for (const [code, m] of Object.entries(messages)) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = m.label;
+    btn.dataset.lang = code;
+    btn.setAttribute("aria-pressed", "false");
+    btn.addEventListener("click", () => setLang(code));
+    nav.appendChild(btn);
+  }
+
+  // 初期表示: 前回の選択 → ブラウザの言語 → 英語
+  let initial = null;
+  try { initial = localStorage.getItem("lang"); } catch (e) {}
+  if (!initial || !messages[initial]) {
+    if (messages[navigator.language]) {
+      initial = navigator.language;
+    } else {
+      const base = navigator.language.split("-")[0];
+      initial = Object.keys(messages).find(k => k === base || k.startsWith(base + "-")) || "en";
+    }
+  }
+  setLang(initial);
+</script>
 </body>
 </html>
