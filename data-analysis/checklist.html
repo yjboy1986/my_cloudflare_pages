@@ -153,10 +153,28 @@ function setStatus(msg, isError){
   el.textContent = msg;
   el.style.color = isError ? "#dc2626" : "";
 }
+function httpError(r){
+  return r.json().catch(function(){ return null; }).then(function(j){
+    var err = new Error("http " + r.status);
+    err.status = r.status;
+    err.serverError = (j && j.error) ? j.error : "";
+    err.serverDetail = (j && j.detail) ? j.detail : "";
+    throw err;
+  });
+}
+function errNote(e){
+  if(!e) return "";
+  var parts = [];
+  if(e.status) parts.push("HTTP " + e.status);
+  if(e.serverError) parts.push(e.serverError);
+  if(e.serverDetail) parts.push(e.serverDetail);
+  if(!parts.length && e.message) parts.push(e.message);
+  return parts.length ? "（" + parts.join(" / ") + "）" : "";
+}
 function loadRemote(){
   setStatus("記録を読み込み中です…", false);
   fetch("/api/checklist", { headers:{ "Accept":"application/json" }, credentials:"same-origin" })
-    .then(function(r){ if(!r.ok) throw new Error("http " + r.status); return r.json(); })
+    .then(function(r){ if(!r.ok) return httpError(r); return r.json(); })
     .then(function(d){
       if(!d || !Array.isArray(d.projects)) d = {projects:[], current:null};
       state = d; loaded = true;
@@ -164,7 +182,7 @@ function loadRemote(){
       render();
     })
     .catch(function(e){
-      setStatus("記録を読み込めませんでした（通信エラー）。接続を確認して、このページを再読み込みしてください。", true);
+      setStatus("記録を読み込めませんでした（通信エラー）" + errNote(e) + "。接続を確認して、このページを再読み込みしてください。", true);
     });
 }
 function save(){
@@ -173,8 +191,8 @@ function save(){
   saveTimer = setTimeout(function(){
     setStatus("保存中…", false);
     fetch("/api/checklist", { method:"PUT", headers:{ "Content-Type":"application/json" }, credentials:"same-origin", body: JSON.stringify(state) })
-      .then(function(r){ if(!r.ok) throw new Error("http " + r.status); setStatus("", false); })
-      .catch(function(e){ setStatus("保存できませんでした（通信エラー）。接続を確認して、もう一度操作してください。", true); });
+      .then(function(r){ if(!r.ok) return httpError(r); setStatus("", false); })
+      .catch(function(e){ setStatus("保存できませんでした（通信エラー）" + errNote(e) + "。接続を確認して、もう一度操作してください。", true); });
   }, 300);
 }
 
