@@ -17,6 +17,10 @@
   .wrap{max-width:880px;margin:0 auto;padding:20px 16px 64px}
   a{color:var(--accent)}
   .back{font-size:14px;text-decoration:none}
+  .lang-bar{display:flex;justify-content:flex-end;margin-bottom:4px}
+  .lang-switch{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+  .lang-switch button{border:none;border-radius:0;background:var(--card);color:var(--muted);padding:6px 14px;font-size:13px}
+  .lang-switch button.active{background:var(--accent);color:var(--accent-ink);font-weight:600}
   h1{font-size:24px;margin:10px 0 4px}
   .sub{color:var(--muted);font-size:14px;margin:0 0 16px}
   .note{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-size:13px;color:var(--muted);margin-bottom:20px}
@@ -46,7 +50,7 @@
   .item:first-of-type{border-top:none}
   .item input{width:20px;height:20px;margin-top:3px;flex:none}
   .item .key{font-size:12px;color:var(--muted)}
-  .item.core .txt::after{content:" ★最低限の3点";font-size:12px;color:var(--warn);font-weight:600}
+  .item.core .txt::after{content:attr(data-core);font-size:12px;color:var(--warn);font-weight:600}
   table{width:100%;border-collapse:collapse;font-size:14px}
   th,td{border-top:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
   th{font-size:12px;color:var(--muted)}
@@ -57,17 +61,23 @@
 </head>
 <body>
 <div class="wrap">
-  <a class="back" href="index.html">← データ分析 成果物の入口へ</a>
-  <h1>情報整理チェックリスト</h1>
-  <p class="sub">データ分析の案件ごとに、情報の整理と管理の抜け漏れを防ぐためのチェックリストです。Muse 上の「情報整理チェックリスト」アプリと同じ A〜D・12項目を、このサイトで使える形にしたものです。記録は Cloudflare のストレージに保存されます。</p>
-  <div class="note">このページの記録は <strong>Cloudflare のストレージ（KV）</strong> に保存され、Cloudflare Access でログインした本人だけがアクセスできます。端末やブラウザを替えても、同じアカウントでログインすれば同じ記録が見られます。</div>
+  <div class="lang-bar">
+    <div class="lang-switch" role="group" aria-label="Language / 言語">
+      <button type="button" id="lang-ja">日本語</button>
+      <button type="button" id="lang-en">English</button>
+    </div>
+  </div>
+  <a class="back" id="back-link" href="index.html">← データ分析 成果物の入口へ</a>
+  <h1 id="page-title">情報整理チェックリスト</h1>
+  <p class="sub" id="page-sub">データ分析の案件ごとに、情報の整理と管理の抜け漏れを防ぐためのチェックリストです。Muse 上の「情報整理チェックリスト」アプリと同じ A〜D・12項目を、このサイトで使える形にしたものです。記録は Cloudflare のストレージに保存されます。</p>
+  <div class="note" id="note-kv">このページの記録は <strong>Cloudflare のストレージ（KV）</strong> に保存され、Cloudflare Access でログインした本人だけがアクセスできます。端末やブラウザを替えても、同じアカウントでログインすれば同じ記録が見られます。</div>
   <div class="note" id="sync-status" hidden></div>
 
   <div class="card">
-    <h2>案件</h2>
+    <h2 id="proj-h2">案件</h2>
     <div class="row">
-      <div style="flex:2"><label>案件名<input type="text" id="p-name" placeholder="例：月次売上レポート"></label></div>
-      <div><label>日付<input type="date" id="p-date"></label></div>
+      <div style="flex:2"><label><span id="p-name-label">案件名</span><input type="text" id="p-name" placeholder="例：月次売上レポート"></label></div>
+      <div><label><span id="p-date-label">日付</span><input type="date" id="p-date"></label></div>
       <div style="flex:0"><label>&nbsp;<button class="primary" id="p-add" style="width:100%">追加</button></label></div>
     </div>
     <div class="proj-list" id="proj-list"></div>
@@ -82,12 +92,12 @@
   </div>
 
   <div class="card">
-    <h2>ファイル名メーカー</h2>
-    <p class="sub">「日付_テーマ_v番号」の形を作ります。「最終版」「本当の最終版」を防ぐための道具です。</p>
+    <h2 id="fname-h2">ファイル名メーカー</h2>
+    <p class="sub" id="fname-sub">「日付_テーマ_v番号」の形を作ります。「最終版」「本当の最終版」を防ぐための道具です。</p>
     <div class="row">
-      <div><label>日付<input type="date" id="f-date"></label></div>
-      <div style="flex:2"><label>テーマ<input type="text" id="f-theme" placeholder="例：売上集計"></label></div>
-      <div><label>版（v）<input type="number" id="f-ver" value="1" min="1" step="1"></label></div>
+      <div><label><span id="f-date-label">日付</span><input type="date" id="f-date"></label></div>
+      <div style="flex:2"><label><span id="f-theme-label">テーマ</span><input type="text" id="f-theme" placeholder="例：売上集計"></label></div>
+      <div><label><span id="f-ver-label">版（v）</span><input type="number" id="f-ver" value="1" min="1" step="1"></label></div>
     </div>
     <div class="row" style="margin-top:10px;align-items:center">
       <div class="fname" id="f-out" style="flex:3"></div>
@@ -99,12 +109,12 @@
   </div>
 
   <div class="card" id="dict-card" hidden>
-    <h2>データ辞書</h2>
-    <p class="sub">選択中の案件に、指標や列の定義・出所を残します。</p>
+    <h2 id="dict-h2">データ辞書</h2>
+    <p class="sub" id="dict-sub">選択中の案件に、指標や列の定義・出所を残します。</p>
     <div class="row">
-      <div><label>項目名<input type="text" id="dic-term" placeholder="例：売上"></label></div>
-      <div style="flex:2"><label>定義<input type="text" id="dic-def" placeholder="例：返品を引いた請求額"></label></div>
-      <div><label>出所・単位<input type="text" id="dic-src" placeholder="例：販売管理システム／円"></label></div>
+      <div><label><span id="dic-term-label">項目名</span><input type="text" id="dic-term" placeholder="例：売上"></label></div>
+      <div style="flex:2"><label><span id="dic-def-label">定義</span><input type="text" id="dic-def" placeholder="例：返品を引いた請求額"></label></div>
+      <div><label><span id="dic-src-label">出所・単位</span><input type="text" id="dic-src" placeholder="例：販売管理システム／円"></label></div>
       <div style="flex:0"><label>&nbsp;<button class="primary" id="dic-add" style="width:100%">追加</button></label></div>
     </div>
     <div id="dic-list" style="margin-top:10px"></div>
@@ -113,35 +123,209 @@
 
 <script>
 "use strict";
-var SECTIONS = [
-  { id:"A", title:"A. 始める前（Prepare）- 正本と定義", items:[
-    { id:"a1", text:"使うデータの「正本」（唯一の最新版）はどれか決まっている" },
-    { id:"a2", text:"ファイル名に日付と版が入っている（例：20261201_売上集計_v2。「最終版」「本当の最終版」と書かない）" },
-    { id:"a3", text:"指標の定義が文書で残っている（例：売上＝返品を引いた請求額、など部署で食い違わない形で）", core:"definition" },
-    { id:"a4", text:"各列の意味・単位・出所・更新日が分かる（メタデータ／データ辞書がある）" }
-  ]},
-  { id:"B", title:"B. 扱うとき（Process）- 品質", items:[
-    { id:"b1", text:"重複、空白、表記ゆれをチェックした。空白は理由（未回答か入力ミスか）を確認してから扱いを決めた" },
-    { id:"b2", text:"元データは上書きせず、加工用は別ファイル／別シートに分けてある", core:"original" },
-    { id:"b3", text:"加工の手順をメモした（誰が再実行しても同じ結果になる形で）" }
-  ]},
-  { id:"C", title:"C. アクセスと安全", items:[
-    { id:"c1", text:"誰が見られるデータか決まっている。給与など個人が分かるデータは、置き場所と共有範囲を限定した" },
-    { id:"c2", text:"共有は集計レベルにし、少人数グループで個人が特定される形になっていない" }
-  ]},
-  { id:"D", title:"D. 共有・保管（Share の後）", items:[
-    { id:"d1", text:"報告に使ったデータと手順が、報告とセットで保管されている（後から再現できる）", core:"repro" },
-    { id:"d2", text:"古い版は「旧版」と分かる場所に寄せ、現行版と混ざっていない" },
-    { id:"d3", text:"次回同じ分析をするときの担当と更新タイミングが決まっている" }
-  ]}
-];
+/* ===== Language (UI only; user data and KV records are never translated) ===== */
+var LANG_KEY = "checklist-lang";
+var lang = "ja";
+try {
+  var savedLang = window.localStorage.getItem(LANG_KEY);
+  if (savedLang === "ja" || savedLang === "en") lang = savedLang;
+  else {
+    var nav = (navigator.language || "ja").toLowerCase();
+    lang = nav.indexOf("en") === 0 ? "en" : "ja";
+  }
+} catch (e) { lang = "ja"; }
+
+var STR = {
+  ja: {
+    docTitle: "情報整理チェックリスト | データ分析",
+    back: "← データ分析 成果物の入口へ",
+    title: "情報整理チェックリスト",
+    sub: "データ分析の案件ごとに、情報の整理と管理の抜け漏れを防ぐためのチェックリストです。Muse 上の「情報整理チェックリスト」アプリと同じ A〜D・12項目を、このサイトで使える形にしたものです。記録は Cloudflare のストレージに保存されます。",
+    kvNote: "このページの記録は <strong>Cloudflare のストレージ（KV）</strong> に保存され、Cloudflare Access でログインした本人だけがアクセスできます。端末やブラウザを替えても、同じアカウントでログインすれば同じ記録が見られます。",
+    projects: "案件",
+    projName: "案件名", projNamePh: "例：月次売上レポート",
+    date: "日付", add: "追加", detail: "案件の詳細",
+    fnameTitle: "ファイル名メーカー",
+    fnameSub: "「日付_テーマ_v番号」の形を作ります。「最終版」「本当の最終版」を防ぐための道具です。",
+    fTheme: "テーマ", fThemePh: "例：売上集計", fVer: "版（v）",
+    verUp: "版を上げる", copy: "コピー", themeFallback: "テーマ",
+    dictTitle: "データ辞書",
+    dictSub: "選択中の案件に、指標や列の定義・出所を残します。",
+    dicTerm: "項目名", dicTermPh: "例：売上",
+    dicDef: "定義", dicDefPh: "例：返品を引いた請求額",
+    dicSrc: "出所・単位", dicSrcPh: "例：販売管理システム／円",
+    thTerm: "項目名", thDef: "定義", thSrc: "出所・単位",
+    noProjects: "まだ案件がありません。上のフォームから追加してください。",
+    noDict: "まだ登録がありません。",
+    progress: "進捗", open: "開く", viewing: "表示中", del: "削除", edit: "編集",
+    itemsUnit: "項目",
+    pointsHead: "最低限の3点： ", pointsSuffix: " 点クリア",
+    pointsNote: "正本・定義＝Aの正本と定義の両方、元データ保護＝Bの元データ保護、再現性＝Dの保管、が済むと点が付きます。",
+    coreTag: " ★最低限の3点",
+    loading: "記録を読み込み中です…",
+    loadError: "記録を読み込めませんでした（通信エラー）",
+    loadErrorTail: "。接続を確認して、このページを再読み込みしてください。",
+    saving: "保存中…",
+    saveError: "保存できませんでした（通信エラー）",
+    saveErrorTail: "。接続を確認して、もう一度操作してください。",
+    waitLoad: "記録の読み込みが終わるまでお待ちください。",
+    enterProjName: "案件名を入力してください。",
+    enterTerm: "項目名を入力してください。",
+    dupTerm: "その項目名はすでに登録されています。",
+    copied: "コピーしました： ",
+    copyPrompt: "コピーしてください",
+    delQPre: "案件「", delQPost: "」を削除しますか？（保存済みの記録から消えます）"
+  },
+  en: {
+    docTitle: "Information Organization Checklist | Data Analysis",
+    back: "← Back to Data Analysis index",
+    title: "Information Organization Checklist",
+    sub: "A checklist to prevent gaps in organizing and managing information for each data analysis project. It has the same sections A–D and 12 items as the “Information Organization Checklist” app on Muse, made usable on this site. Records are stored in Cloudflare storage.",
+    kvNote: "Records on this page are stored in <strong>Cloudflare storage (KV)</strong> and can only be accessed by you while signed in with Cloudflare Access. Even if you switch devices or browsers, sign in with the same account to see the same records.",
+    projects: "Projects",
+    projName: "Project name", projNamePh: "e.g. Monthly sales report",
+    date: "Date", add: "Add", detail: "Project details",
+    fnameTitle: "File Name Maker",
+    fnameSub: "Builds names in the form “date_theme_vNumber” — a tool to prevent “final version” and “real final version”.",
+    fTheme: "Theme", fThemePh: "e.g. Sales summary", fVer: "Version (v)",
+    verUp: "Bump version", copy: "Copy", themeFallback: "theme",
+    dictTitle: "Data Dictionary",
+    dictSub: "Record definitions and sources of metrics and columns for the selected project.",
+    dicTerm: "Item name", dicTermPh: "e.g. Sales",
+    dicDef: "Definition", dicDefPh: "e.g. Billed amount after returns",
+    dicSrc: "Source / Unit", dicSrcPh: "e.g. Sales system / JPY",
+    thTerm: "Item", thDef: "Definition", thSrc: "Source / Unit",
+    noProjects: "No projects yet. Add one using the form above.",
+    noDict: "No entries yet.",
+    progress: "Progress", open: "Open", viewing: "Viewing", del: "Delete", edit: "Edit",
+    itemsUnit: "items",
+    pointsHead: "Core 3 points: ", pointsSuffix: " cleared",
+    pointsNote: "A point is earned when: Source & definitions = both the source and definition items in A; Original data protection = the original-data item in B; Reproducibility = the storage item in D.",
+    coreTag: " ★Core 3",
+    loading: "Loading records…",
+    loadError: "Could not load records (connection error)",
+    loadErrorTail: ". Check your connection and reload this page.",
+    saving: "Saving…",
+    saveError: "Could not save (connection error)",
+    saveErrorTail: ". Check your connection and try again.",
+    waitLoad: "Please wait until the records finish loading.",
+    enterProjName: "Please enter a project name.",
+    enterTerm: "Please enter an item name.",
+    dupTerm: "That item name is already registered.",
+    copied: "Copied: ",
+    copyPrompt: "Please copy this",
+    delQPre: "Delete the project “", delQPost: "”? (It will be removed from the saved records.)"
+  }
+};
+function t(k){ return STR[lang][k]; }
+
+var SECTIONS_BY_LANG = {
+  ja: [
+    { id:"A", title:"A. 始める前（Prepare）- 正本と定義", items:[
+      { id:"a1", text:"使うデータの「正本」（唯一の最新版）はどれか決まっている" },
+      { id:"a2", text:"ファイル名に日付と版が入っている（例：20261201_売上集計_v2。「最終版」「本当の最終版」と書かない）" },
+      { id:"a3", text:"指標の定義が文書で残っている（例：売上＝返品を引いた請求額、など部署で食い違わない形で）", core:"definition" },
+      { id:"a4", text:"各列の意味・単位・出所・更新日が分かる（メタデータ／データ辞書がある）" }
+    ]},
+    { id:"B", title:"B. 扱うとき（Process）- 品質", items:[
+      { id:"b1", text:"重複、空白、表記ゆれをチェックした。空白は理由（未回答か入力ミスか）を確認してから扱いを決めた" },
+      { id:"b2", text:"元データは上書きせず、加工用は別ファイル／別シートに分けてある", core:"original" },
+      { id:"b3", text:"加工の手順をメモした（誰が再実行しても同じ結果になる形で）" }
+    ]},
+    { id:"C", title:"C. アクセスと安全", items:[
+      { id:"c1", text:"誰が見られるデータか決まっている。給与など個人が分かるデータは、置き場所と共有範囲を限定した" },
+      { id:"c2", text:"共有は集計レベルにし、少人数グループで個人が特定される形になっていない" }
+    ]},
+    { id:"D", title:"D. 共有・保管（Share の後）", items:[
+      { id:"d1", text:"報告に使ったデータと手順が、報告とセットで保管されている（後から再現できる）", core:"repro" },
+      { id:"d2", text:"古い版は「旧版」と分かる場所に寄せ、現行版と混ざっていない" },
+      { id:"d3", text:"次回同じ分析をするときの担当と更新タイミングが決まっている" }
+    ]}
+  ],
+  en: [
+    { id:"A", title:"A. Before you start (Prepare) — Source of truth & definitions", items:[
+      { id:"a1", text:"The source of truth (the single latest version) of the data to use is decided" },
+      { id:"a2", text:"File names include a date and a version (e.g. 20261201_sales-summary_v2 — never write “final version” or “real final version”)" },
+      { id:"a3", text:"Metric definitions are documented (e.g. Sales = billed amount after returns, in a form departments will not interpret differently)", core:"definition" },
+      { id:"a4", text:"The meaning, unit, source and update date of each column are known (metadata / a data dictionary exists)" }
+    ]},
+    { id:"B", title:"B. While working (Process) — Quality", items:[
+      { id:"b1", text:"Duplicates, blanks and inconsistent notations were checked. For blanks, the reason (no response or input error) was confirmed before deciding how to treat them" },
+      { id:"b2", text:"Original data is not overwritten; working copies are kept in separate files / sheets", core:"original" },
+      { id:"b3", text:"The processing steps are written down (so that anyone re-running them gets the same result)" }
+    ]},
+    { id:"C", title:"C. Access & safety", items:[
+      { id:"c1", text:"Who may see the data is decided. Data that identifies individuals, such as salaries, is kept and shared only in limited places and ranges" },
+      { id:"c2", text:"Sharing is at aggregate level, so individuals cannot be identified within small groups" }
+    ]},
+    { id:"D", title:"D. Sharing & storage (after Share)", items:[
+      { id:"d1", text:"The data and steps used for the report are stored together with the report (reproducible later)", core:"repro" },
+      { id:"d2", text:"Old versions are set aside in a place clearly marked as old, not mixed with the current version" },
+      { id:"d3", text:"The owner and update timing for the next run of the same analysis are decided" }
+    ]}
+  ]
+};
+var POINTS_BY_LANG = {
+  ja: [
+    { label:"正本・定義", needs:["a1","a3"] },
+    { label:"元データ保護", needs:["b2"] },
+    { label:"再現性", needs:["d1"] }
+  ],
+  en: [
+    { label:"Source & definitions", needs:["a1","a3"] },
+    { label:"Original data protection", needs:["b2"] },
+    { label:"Reproducibility", needs:["d1"] }
+  ]
+};
+var SECTIONS = SECTIONS_BY_LANG[lang];
+var POINTS = POINTS_BY_LANG[lang];
 var ALL_ITEMS = [];
-SECTIONS.forEach(function(s){ s.items.forEach(function(it){ ALL_ITEMS.push(it.id); }); });
-var POINTS = [
-  { label:"正本・定義", needs:["a1","a3"] },
-  { label:"元データ保護", needs:["b2"] },
-  { label:"再現性", needs:["d1"] }
-];
+SECTIONS_BY_LANG.ja.forEach(function(s){ s.items.forEach(function(it){ ALL_ITEMS.push(it.id); }); });
+
+function applyStatic(){
+  document.documentElement.lang = lang;
+  document.title = t("docTitle");
+  document.getElementById("back-link").textContent = t("back");
+  document.getElementById("page-title").textContent = t("title");
+  document.getElementById("page-sub").textContent = t("sub");
+  document.getElementById("note-kv").innerHTML = t("kvNote");
+  document.getElementById("proj-h2").textContent = t("projects");
+  document.getElementById("p-name-label").textContent = t("projName");
+  document.getElementById("p-name").placeholder = t("projNamePh");
+  document.getElementById("p-date-label").textContent = t("date");
+  document.getElementById("p-add").textContent = t("add");
+  document.getElementById("fname-h2").textContent = t("fnameTitle");
+  document.getElementById("fname-sub").textContent = t("fnameSub");
+  document.getElementById("f-date-label").textContent = t("date");
+  document.getElementById("f-theme-label").textContent = t("fTheme");
+  document.getElementById("f-theme").placeholder = t("fThemePh");
+  document.getElementById("f-ver-label").textContent = t("fVer");
+  document.getElementById("f-up").textContent = t("verUp");
+  document.getElementById("f-copy").textContent = t("copy");
+  document.getElementById("dict-h2").textContent = t("dictTitle");
+  document.getElementById("dict-sub").textContent = t("dictSub");
+  document.getElementById("dic-term-label").textContent = t("dicTerm");
+  document.getElementById("dic-term").placeholder = t("dicTermPh");
+  document.getElementById("dic-def-label").textContent = t("dicDef");
+  document.getElementById("dic-def").placeholder = t("dicDefPh");
+  document.getElementById("dic-src-label").textContent = t("dicSrc");
+  document.getElementById("dic-src").placeholder = t("dicSrcPh");
+  document.getElementById("lang-ja").classList.toggle("active", lang === "ja");
+  document.getElementById("lang-en").classList.toggle("active", lang === "en");
+  var p = current();
+  if(!p) document.getElementById("d-title").textContent = t("detail");
+}
+function setLang(next){
+  if(next !== "ja" && next !== "en") return;
+  lang = next;
+  try { window.localStorage.setItem(LANG_KEY, next); } catch (e) {}
+  SECTIONS = SECTIONS_BY_LANG[lang];
+  POINTS = POINTS_BY_LANG[lang];
+  applyStatic();
+  render();
+}
+document.getElementById("lang-ja").addEventListener("click", function(){ setLang("ja"); });
+document.getElementById("lang-en").addEventListener("click", function(){ setLang("en"); });
 
 var state = {projects:[], current:null};
 var loaded = false;
@@ -172,7 +356,7 @@ function errNote(e){
   return parts.length ? "（" + parts.join(" / ") + "）" : "";
 }
 function loadRemote(){
-  setStatus("記録を読み込み中です…", false);
+  setStatus(t("loading"), false);
   fetch("/api/checklist", { headers:{ "Accept":"application/json" }, credentials:"same-origin" })
     .then(function(r){ if(!r.ok) return httpError(r); return r.json(); })
     .then(function(d){
@@ -182,17 +366,17 @@ function loadRemote(){
       render();
     })
     .catch(function(e){
-      setStatus("記録を読み込めませんでした（通信エラー）" + errNote(e) + "。接続を確認して、このページを再読み込みしてください。", true);
+      setStatus(t("loadError") + errNote(e) + t("loadErrorTail"), true);
     });
 }
 function save(){
   if(!loaded) return;
   if(saveTimer) clearTimeout(saveTimer);
   saveTimer = setTimeout(function(){
-    setStatus("保存中…", false);
+    setStatus(t("saving"), false);
     fetch("/api/checklist", { method:"PUT", headers:{ "Content-Type":"application/json" }, credentials:"same-origin", body: JSON.stringify(state) })
       .then(function(r){ if(!r.ok) return httpError(r); setStatus("", false); })
-      .catch(function(e){ setStatus("保存できませんでした（通信エラー）" + errNote(e) + "。接続を確認して、もう一度操作してください。", true); });
+      .catch(function(e){ setStatus(t("saveError") + errNote(e) + t("saveErrorTail"), true); });
   }, 300);
 }
 
@@ -209,21 +393,21 @@ function pointsDone(p){
 
 function renderProjects(){
   var box = document.getElementById("proj-list");
-  if(!state.projects.length){ box.innerHTML = '<p class="empty">まだ案件がありません。上のフォームから追加してください。</p>'; }
+  if(!state.projects.length){ box.innerHTML = '<p class="empty">' + esc(t("noProjects")) + '</p>'; }
   else{
     box.innerHTML = state.projects.map(function(p){
       var pr = progress(p);
       return '<div class="proj'+(p.id===state.current?" active":"")+'">'
-        + '<div><div class="name">'+esc(p.name)+'</div><div class="meta">'+esc(p.date||"")+' ・ 進捗 '+pr.pct+'%（'+pr.done+'/'+pr.total+'）</div></div>'
+        + '<div><div class="name">'+esc(p.name)+'</div><div class="meta">'+esc(p.date||"")+' ・ '+esc(t("progress"))+' '+pr.pct+'%（'+pr.done+'/'+pr.total+'）</div></div>'
         + '<div class="sp"></div>'
-        + '<button data-open="'+p.id+'">'+(p.id===state.current?"表示中":"開く")+'</button>'
-        + '<button class="danger" data-del="'+p.id+'">削除</button></div>';
+        + '<button data-open="'+p.id+'">'+(p.id===state.current?esc(t("viewing")):esc(t("open")))+'</button>'
+        + '<button class="danger" data-del="'+p.id+'">'+esc(t("del"))+'</button></div>';
     }).join("");
   }
   box.querySelectorAll("[data-open]").forEach(function(b){ b.addEventListener("click", function(){ state.current = b.getAttribute("data-open"); save(); render(); }); });
   box.querySelectorAll("[data-del]").forEach(function(b){ b.addEventListener("click", function(){
     var p = state.projects.filter(function(x){ return x.id===b.getAttribute("data-del"); })[0];
-    if(p && confirm("案件「"+p.name+"」を削除しますか？（保存済みの記録から消えます）")){
+    if(p && confirm(t("delQPre")+p.name+t("delQPost"))){
       state.projects = state.projects.filter(function(x){ return x.id!==p.id; });
       if(state.current===p.id) state.current = state.projects.length? state.projects[0].id : null;
       save(); render();
@@ -240,19 +424,19 @@ function renderDetail(){
   document.getElementById("d-title").textContent = p.name + (p.date? "（"+p.date+"）" : "");
   var pr = progress(p);
   document.getElementById("d-pct").textContent = pr.pct + "%";
-  document.getElementById("d-count").textContent = pr.done + " / " + pr.total + " 項目";
+  document.getElementById("d-count").textContent = pr.done + " / " + pr.total + " " + t("itemsUnit");
   document.getElementById("d-bar").style.width = pr.pct + "%";
   var pd = pointsDone(p);
   var n = pd.filter(Boolean).length;
   document.getElementById("d-points").innerHTML =
-    '<div style="margin:8px 0 4px"><strong>最低限の3点： '+n+' / 3 点クリア</strong></div>'
-    + POINTS.map(function(pt,i){ return '<span class="pill'+(pd[i]?" done":"")+'">'+(pd[i]?"✓ ":"")+pt.label+'</span>'; }).join("")
-    + '<div class="sec-count">正本・定義＝Aの正本と定義の両方、元データ保護＝Bの元データ保護、再現性＝Dの保管、が済むと点が付きます。</div>';
+    '<div style="margin:8px 0 4px"><strong>'+esc(t("pointsHead"))+n+' / 3'+esc(t("pointsSuffix"))+'</strong></div>'
+    + POINTS.map(function(pt,i){ return '<span class="pill'+(pd[i]?" done":"")+'">'+(pd[i]?"✓ ":"")+esc(pt.label)+'</span>'; }).join("")
+    + '<div class="sec-count">'+esc(t("pointsNote"))+'</div>';
   document.getElementById("d-sections").innerHTML = SECTIONS.map(function(s){
     var sd = s.items.filter(function(it){ return p.checks[it.id]; }).length;
-    var html = '<h3>'+s.title+' <span class="sec-count">'+sd+'/'+s.items.length+'</span></h3>';
+    var html = '<h3>'+esc(s.title)+' <span class="sec-count">'+sd+'/'+s.items.length+'</span></h3>';
     html += s.items.map(function(it){
-      return '<label class="item'+(it.core?" core":"")+'"><input type="checkbox" data-check="'+it.id+'"'+(p.checks[it.id]?" checked":"")+'><span class="txt">'+esc(it.text)+'</span></label>';
+      return '<label class="item'+(it.core?" core":"")+'"><input type="checkbox" data-check="'+it.id+'"'+(p.checks[it.id]?" checked":"")+'><span class="txt"'+(it.core?' data-core="'+esc(t("coreTag"))+'"':"") +'>'+esc(it.text)+'</span></label>';
     }).join("");
     return html;
   }).join("");
@@ -264,11 +448,11 @@ function renderDetail(){
 
 function renderDict(p){
   var box = document.getElementById("dic-list");
-  if(!p.dict.length){ box.innerHTML = '<p class="empty">まだ登録がありません。</p>'; return; }
-  box.innerHTML = '<table><thead><tr><th>項目名</th><th>定義</th><th>出所・単位</th><th></th></tr></thead><tbody>'
+  if(!p.dict.length){ box.innerHTML = '<p class="empty">' + esc(t("noDict")) + '</p>'; return; }
+  box.innerHTML = '<table><thead><tr><th>'+esc(t("thTerm"))+'</th><th>'+esc(t("thDef"))+'</th><th>'+esc(t("thSrc"))+'</th><th></th></tr></thead><tbody>'
     + p.dict.map(function(e,i){
       return '<tr><td>'+esc(e.term)+'</td><td>'+esc(e.def)+'</td><td>'+esc(e.src)+'</td>'
-        + '<td style="white-space:nowrap"><button data-dedit="'+i+'">編集</button> <button class="danger" data-ddel="'+i+'">削除</button></td></tr>';
+        + '<td style="white-space:nowrap"><button data-dedit="'+i+'">'+esc(t("edit"))+'</button> <button class="danger" data-ddel="'+i+'">'+esc(t("del"))+'</button></td></tr>';
     }).join("") + '</tbody></table>';
   box.querySelectorAll("[data-ddel]").forEach(function(b){ b.addEventListener("click", function(){
     p.dict.splice(Number(b.getAttribute("data-ddel")),1); save(); renderDict(p);
@@ -287,9 +471,9 @@ function render(){ renderProjects(); renderDetail(); }
 
 document.getElementById("p-date").value = today();
 document.getElementById("p-add").addEventListener("click", function(){
-  if(!loaded){ alert("記録の読み込みが終わるまでお待ちください。"); return; }
+  if(!loaded){ alert(t("waitLoad")); return; }
   var name = document.getElementById("p-name").value.trim();
-  if(!name){ alert("案件名を入力してください。"); return; }
+  if(!name){ alert(t("enterProjName")); return; }
   var p = { id:"p"+Date.now(), name:name, date:document.getElementById("p-date").value || today(), checks:{}, dict:[] };
   state.projects.unshift(p); state.current = p.id;
   document.getElementById("p-name").value = "";
@@ -298,8 +482,8 @@ document.getElementById("p-add").addEventListener("click", function(){
 document.getElementById("dic-add").addEventListener("click", function(){
   var p = current(); if(!p) return;
   var term = document.getElementById("dic-term").value.trim();
-  if(!term){ alert("項目名を入力してください。"); return; }
-  if(p.dict.some(function(e){ return e.term === term; })){ alert("その項目名はすでに登録されています。"); return; }
+  if(!term){ alert(t("enterTerm")); return; }
+  if(p.dict.some(function(e){ return e.term === term; })){ alert(t("dupTerm")); return; }
   p.dict.push({ term:term, def:document.getElementById("dic-def").value.trim(), src:document.getElementById("dic-src").value.trim() });
   document.getElementById("dic-term").value = ""; document.getElementById("dic-def").value = ""; document.getElementById("dic-src").value = "";
   save(); renderDict(p);
@@ -310,18 +494,19 @@ var fDate = document.getElementById("f-date"), fTheme = document.getElementById(
 fDate.value = today();
 function fname(){
   var d = (fDate.value || today()).replace(/-/g,"");
-  var t = fTheme.value.trim() || "テーマ";
+  var th = fTheme.value.trim() || t("themeFallback");
   var v = Math.max(1, parseInt(fVer.value || "1", 10));
-  return d + "_" + t + "_v" + v;
+  return d + "_" + th + "_v" + v;
 }
 function renderFname(){ fOut.textContent = fname(); }
 [fDate, fTheme, fVer].forEach(function(el){ el.addEventListener("input", renderFname); });
 document.getElementById("f-up").addEventListener("click", function(){ fVer.value = Math.max(1, parseInt(fVer.value||"1",10)) + 1; renderFname(); });
 document.getElementById("f-copy").addEventListener("click", function(){
-  var t = fname();
-  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){ alert("コピーしました： " + t); }, function(){ prompt("コピーしてください", t); }); }
-  else{ prompt("コピーしてください", t); }
+  var tx = fname();
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(tx).then(function(){ alert(t("copied") + tx); }, function(){ prompt(t("copyPrompt"), tx); }); }
+  else{ prompt(t("copyPrompt"), tx); }
 });
+applyStatic();
 renderFname();
 render();
 loadRemote();
