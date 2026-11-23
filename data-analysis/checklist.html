@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>情報整理チェックリスト（静的版） | データ分析</title>
+<title>情報整理チェックリスト | データ分析</title>
 <style>
   :root{
     --bg:#f6f7f9; --card:#fff; --ink:#1c2430; --muted:#5b6b7f; --line:#d9e0e8;
@@ -58,9 +58,10 @@
 <body>
 <div class="wrap">
   <a class="back" href="index.html">← データ分析 成果物の入口へ</a>
-  <h1>情報整理チェックリスト（静的版）</h1>
-  <p class="sub">データ分析の案件ごとに、情報の整理と管理の抜け漏れを防ぐためのチェックリストです。Muse 上の「情報整理チェックリスト」アプリと同じ A〜D・12項目を、ブラウザだけで動く形にしたものです。</p>
-  <div class="note">このページの記録は、この端末・このブラウザの <strong>localStorage</strong> に保存されます。サーバーには送信されません。別の端末やブラウザでは表示されず、ブラウザのデータを消すと記録も消えます。大事な案件の記録は Muse 上のアプリ版（記録が残る版）もあわせてご利用ください。</div>
+  <h1>情報整理チェックリスト</h1>
+  <p class="sub">データ分析の案件ごとに、情報の整理と管理の抜け漏れを防ぐためのチェックリストです。Muse 上の「情報整理チェックリスト」アプリと同じ A〜D・12項目を、このサイトで使える形にしたものです。記録は Cloudflare のストレージに保存されます。</p>
+  <div class="note">このページの記録は <strong>Cloudflare のストレージ（KV）</strong> に保存され、Cloudflare Access でログインした本人だけがアクセスできます。端末やブラウザを替えても、同じアカウントでログインすれば同じ記録が見られます。</div>
+  <div class="note" id="sync-status" hidden></div>
 
   <div class="card">
     <h2>案件</h2>
@@ -112,7 +113,6 @@
 
 <script>
 "use strict";
-var KEY = "msfabrica-checklist-v1";
 var SECTIONS = [
   { id:"A", title:"A. 始める前（Prepare）- 正本と定義", items:[
     { id:"a1", text:"使うデータの「正本」（唯一の最新版）はどれか決まっている" },
@@ -143,12 +143,40 @@ var POINTS = [
   { label:"再現性", needs:["d1"] }
 ];
 
-function load(){
-  try{ var d = JSON.parse(localStorage.getItem(KEY) || "{}"); if(!d.projects) d = {projects:[], current:null}; return d; }
-  catch(e){ return {projects:[], current:null}; }
+var state = {projects:[], current:null};
+var loaded = false;
+var saveTimer = null;
+function setStatus(msg, isError){
+  var el = document.getElementById("sync-status");
+  if(!msg){ el.hidden = true; el.textContent = ""; return; }
+  el.hidden = false;
+  el.textContent = msg;
+  el.style.color = isError ? "#dc2626" : "";
 }
-function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
-var state = load();
+function loadRemote(){
+  setStatus("記録を読み込み中です…", false);
+  fetch("/api/checklist", { headers:{ "Accept":"application/json" }, credentials:"same-origin" })
+    .then(function(r){ if(!r.ok) throw new Error("http " + r.status); return r.json(); })
+    .then(function(d){
+      if(!d || !Array.isArray(d.projects)) d = {projects:[], current:null};
+      state = d; loaded = true;
+      setStatus("", false);
+      render();
+    })
+    .catch(function(e){
+      setStatus("記録を読み込めませんでした（通信エラー）。接続を確認して、このページを再読み込みしてください。", true);
+    });
+}
+function save(){
+  if(!loaded) return;
+  if(saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(function(){
+    setStatus("保存中…", false);
+    fetch("/api/checklist", { method:"PUT", headers:{ "Content-Type":"application/json" }, credentials:"same-origin", body: JSON.stringify(state) })
+      .then(function(r){ if(!r.ok) throw new Error("http " + r.status); setStatus("", false); })
+      .catch(function(e){ setStatus("保存できませんでした（通信エラー）。接続を確認して、もう一度操作してください。", true); });
+  }, 300);
+}
 
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 function today(){ var d=new Date(); function p(n){return (n<10?"0":"")+n;} return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate()); }
@@ -177,7 +205,7 @@ function renderProjects(){
   box.querySelectorAll("[data-open]").forEach(function(b){ b.addEventListener("click", function(){ state.current = b.getAttribute("data-open"); save(); render(); }); });
   box.querySelectorAll("[data-del]").forEach(function(b){ b.addEventListener("click", function(){
     var p = state.projects.filter(function(x){ return x.id===b.getAttribute("data-del"); })[0];
-    if(p && confirm("案件「"+p.name+"」を削除しますか？（この端末の記録から消えます）")){
+    if(p && confirm("案件「"+p.name+"」を削除しますか？（保存済みの記録から消えます）")){
       state.projects = state.projects.filter(function(x){ return x.id!==p.id; });
       if(state.current===p.id) state.current = state.projects.length? state.projects[0].id : null;
       save(); render();
@@ -241,6 +269,7 @@ function render(){ renderProjects(); renderDetail(); }
 
 document.getElementById("p-date").value = today();
 document.getElementById("p-add").addEventListener("click", function(){
+  if(!loaded){ alert("記録の読み込みが終わるまでお待ちください。"); return; }
   var name = document.getElementById("p-name").value.trim();
   if(!name){ alert("案件名を入力してください。"); return; }
   var p = { id:"p"+Date.now(), name:name, date:document.getElementById("p-date").value || today(), checks:{}, dict:[] };
@@ -276,6 +305,7 @@ document.getElementById("f-copy").addEventListener("click", function(){
 });
 renderFname();
 render();
+loadRemote();
 </script>
 </body>
 </html>
