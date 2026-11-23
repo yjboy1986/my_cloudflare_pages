@@ -72,6 +72,17 @@
   }
   #speak:hover { filter: brightness(1.08); }
   #speak svg { width: 1.1em; height: 1.1em; fill: currentColor; flex: none; }
+  .site-nav { display: flex; justify-content: center; }
+  .site-nav a {
+    font-size: 0.95rem;
+    padding: 0.5rem 1.2rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.8;
+  }
+  .site-nav a:hover { opacity: 1; border-color: #f6821f; color: #f6821f; }
 </style>
 </head>
 <body>
@@ -83,6 +94,9 @@
     <span id="speak-label">読み上げ</span>
   </button>
 </main>
+<nav class="site-nav" aria-label="サイト内リンク">
+  <a href="data-analysis/">データ分析</a>
+</nav>
 <nav id="langs" aria-label="Language"></nav>
 <script>
   const messages = {
